@@ -8,14 +8,14 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const database string = "mongogin-prod"
+const database string = "user"
 
 func GetColl(collName string) (*mongo.Collection, error) {
 	client, err := GetMongoClient()
 	return client.Database(database).Collection(collName), err
 }
 
-const uri = "mongodb://localhost:5000/jikkaem-userdb"
+const uri = "mongodb://localhost:10000/jikkaem-userdb"
 
 var MongoClient *mongo.Client
 var MongoClientError error

@@ -8,8 +8,8 @@ service User {
 }
 
 message UserObject {
-    string name = 1;
-    string email = 2;
+  string name = 1;
+  string email = 2;
 }
 
 message UserObjectWithID {

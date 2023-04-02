@@ -20,8 +20,8 @@ func (s *UserServer) GetUserById(ctx context.Context, id *pb.ID) (*pb.UserObject
 
 	return &pb.UserObjectWithID{
 		Id:    result.ID.String(),
-		Name:  result.User.Name,
-		Email: result.User.Email,
+		Name:  result.Name,
+		Email: result.Email,
 	}, nil
 }
 
@@ -38,7 +38,7 @@ func (s *UserServer) CreateUser(ctx context.Context, user *pb.UserObject) (*pb.U
 
 	return &pb.UserObjectWithID{
 		Id:    result.ID.String(),
-		Name:  result.User.Name,
-		Email: result.User.Email,
+		Name:  result.Name,
+		Email: result.Email,
 	}, nil
 }

@@ -8,11 +8,43 @@ import (
 	"context"
 	"fmt"
 	"jikkaem/internal/services/gql-gateway/graph/model"
+	pb "jikkaem/internal/shared/proto/user"
+	"log"
+	"time"
+
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 // CreateUser is the resolver for the createUser field.
-func (r *mutationResolver) CreateUser(ctx context.Context, input *model.NewUser) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: CreateUser - createUser"))
+func (r *mutationResolver) CreateUser(_ context.Context, input *model.NewUser) (*model.User, error) {
+	conn, err := grpc.Dial("localhost:6000", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer conn.Close()
+	c := pb.NewUserClient(conn)
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	userObject := &pb.UserObject{
+		Name:  input.Name,
+		Email: input.Email,
+	}
+
+	res, err := c.CreateUser(ctx, userObject)
+	if err != nil {
+		log.Fatalf("could not create user: %v", err)
+	}
+
+	gqlUser := &model.User{
+		ID:    res.Id,
+		Name:  res.Name,
+		Email: res.Email,
+	}
+
+	return gqlUser, nil
 }
 
 // Fancam is the resolver for the fancam field.
@@ -26,8 +58,33 @@ func (r *queryResolver) Artist(ctx context.Context) ([]*model.Artist, error) {
 }
 
 // User is the resolver for the user field.
-func (r *queryResolver) User(ctx context.Context, input model.SingleUser) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: User - user"))
+func (r *queryResolver) User(_ context.Context, input model.SingleUser) (*model.User, error) {
+	conn, err := grpc.Dial("localhost:6000", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer conn.Close()
+	c := pb.NewUserClient(conn)
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	in := &pb.ID{
+		Id: input.ID,
+	}
+
+	res, err := c.GetUserByID(ctx, in)
+	if err != nil {
+		log.Fatalf("could not get user: %v", err)
+	}
+
+	gqlUser := &model.User{
+		ID:    res.Id,
+		Name:  res.Name,
+		Email: res.Email,
+	}
+
+	return gqlUser, nil
 }
 
 // Mutation returns MutationResolver implementation.

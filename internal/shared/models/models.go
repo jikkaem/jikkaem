@@ -7,13 +7,9 @@ import (
 )
 
 type User struct {
-	Name  string `bson:"name"`
-	Email string `bson:"email"`
-}
-
-type UserWithID struct {
-	ID   primitive.ObjectID `bson:"_id"`
-	User *User
+	ID    primitive.ObjectID `bson:"_id"`
+	Name  string             `bson:"name"`
+	Email string             `bson:"email"`
 }
 
 type Artist struct {
