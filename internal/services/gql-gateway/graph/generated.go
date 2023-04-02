@@ -8,6 +8,7 @@ import (
 	"embed"
 	"errors"
 	"fmt"
+	"jikkaem/internal/services/gql-gateway/graph/model"
 	"strconv"
 	"sync"
 	"sync/atomic"
@@ -15,7 +16,6 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
-	"github.com/jikkaem/jikkaem/internal/services/gql-gateway/graph/model"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 )
@@ -63,9 +63,10 @@ type ComplexityRoot struct {
 	}
 
 	Fancam struct {
-		ID     func(childComplexity int) int
-		Title  func(childComplexity int) int
-		YtLink func(childComplexity int) int
+		Artists func(childComplexity int) int
+		ID      func(childComplexity int) int
+		Title   func(childComplexity int) int
+		YtLink  func(childComplexity int) int
 	}
 
 	Mutation struct {
@@ -73,8 +74,9 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Artists func(childComplexity int) int
-		Fancams func(childComplexity int) int
+		Artist func(childComplexity int) int
+		Fancam func(childComplexity int) int
+		User   func(childComplexity int, input model.SingleUser) int
 	}
 
 	User struct {
@@ -88,8 +90,9 @@ type MutationResolver interface {
 	CreateUser(ctx context.Context, input *model.NewUser) (*model.User, error)
 }
 type QueryResolver interface {
-	Fancams(ctx context.Context) ([]*model.Fancam, error)
-	Artists(ctx context.Context) ([]*model.Artist, error)
+	Fancam(ctx context.Context) ([]*model.Fancam, error)
+	Artist(ctx context.Context) ([]*model.Artist, error)
+	User(ctx context.Context, input model.SingleUser) (*model.User, error)
 }
 
 type executableSchema struct {
@@ -198,6 +201,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Artist.Weight(childComplexity), true
 
+	case "Fancam.artists":
+		if e.complexity.Fancam.Artists == nil {
+			break
+		}
+
+		return e.complexity.Fancam.Artists(childComplexity), true
+
 	case "Fancam.id":
 		if e.complexity.Fancam.ID == nil {
 			break
@@ -231,19 +241,31 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateUser(childComplexity, args["input"].(*model.NewUser)), true
 
-	case "Query.artists":
-		if e.complexity.Query.Artists == nil {
+	case "Query.artist":
+		if e.complexity.Query.Artist == nil {
 			break
 		}
 
-		return e.complexity.Query.Artists(childComplexity), true
+		return e.complexity.Query.Artist(childComplexity), true
 
-	case "Query.fancams":
-		if e.complexity.Query.Fancams == nil {
+	case "Query.fancam":
+		if e.complexity.Query.Fancam == nil {
 			break
 		}
 
-		return e.complexity.Query.Fancams(childComplexity), true
+		return e.complexity.Query.Fancam(childComplexity), true
+
+	case "Query.user":
+		if e.complexity.Query.User == nil {
+			break
+		}
+
+		args, err := ec.field_Query_user_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.User(childComplexity, args["input"].(model.SingleUser)), true
 
 	case "User.email":
 		if e.complexity.User.Email == nil {
@@ -275,6 +297,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	ec := executionContext{rc, e}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
 		ec.unmarshalInputNewUser,
+		ec.unmarshalInputSingleUser,
 	)
 	first := true
 
@@ -360,7 +383,7 @@ func (ec *executionContext) field_Mutation_createUser_args(ctx context.Context, 
 	var arg0 *model.NewUser
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalONewUser2ᚖgithubᚗcomᚋjikkaemᚋjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐNewUser(ctx, tmp)
+		arg0, err = ec.unmarshalONewUser2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐNewUser(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -381,6 +404,21 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 		}
 	}
 	args["name"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_user_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.SingleUser
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNSingleUser2jikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐSingleUser(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
 	return args, nil
 }
 
@@ -919,7 +957,7 @@ func (ec *executionContext) _Artist_gender(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.(*model.Gender)
 	fc.Result = res
-	return ec.marshalOGender2ᚖgithubᚗcomᚋjikkaemᚋjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐGender(ctx, field.Selections, res)
+	return ec.marshalOGender2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐGender(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Artist_gender(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1108,6 +1146,78 @@ func (ec *executionContext) fieldContext_Fancam_ytLink(ctx context.Context, fiel
 	return fc, nil
 }
 
+func (ec *executionContext) _Fancam_artists(ctx context.Context, field graphql.CollectedField, obj *model.Fancam) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Fancam_artists(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Artists, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Artist)
+	fc.Result = res
+	return ec.marshalNArtist2ᚕᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐArtistᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Fancam_artists(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Fancam",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Artist_id(ctx, field)
+			case "stageName":
+				return ec.fieldContext_Artist_stageName(ctx, field)
+			case "fullName":
+				return ec.fieldContext_Artist_fullName(ctx, field)
+			case "koreanName":
+				return ec.fieldContext_Artist_koreanName(ctx, field)
+			case "koreanStageName":
+				return ec.fieldContext_Artist_koreanStageName(ctx, field)
+			case "dob":
+				return ec.fieldContext_Artist_dob(ctx, field)
+			case "group":
+				return ec.fieldContext_Artist_group(ctx, field)
+			case "country":
+				return ec.fieldContext_Artist_country(ctx, field)
+			case "height":
+				return ec.fieldContext_Artist_height(ctx, field)
+			case "weight":
+				return ec.fieldContext_Artist_weight(ctx, field)
+			case "birthplace":
+				return ec.fieldContext_Artist_birthplace(ctx, field)
+			case "gender":
+				return ec.fieldContext_Artist_gender(ctx, field)
+			case "instagram":
+				return ec.fieldContext_Artist_instagram(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Artist", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Mutation_createUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Mutation_createUser(ctx, field)
 	if err != nil {
@@ -1136,7 +1246,7 @@ func (ec *executionContext) _Mutation_createUser(ctx context.Context, field grap
 	}
 	res := resTmp.(*model.User)
 	fc.Result = res
-	return ec.marshalNUser2ᚖgithubᚗcomᚋjikkaemᚋjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1171,8 +1281,8 @@ func (ec *executionContext) fieldContext_Mutation_createUser(ctx context.Context
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_fancams(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_fancams(ctx, field)
+func (ec *executionContext) _Query_fancam(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_fancam(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -1185,7 +1295,7 @@ func (ec *executionContext) _Query_fancams(ctx context.Context, field graphql.Co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Fancams(rctx)
+		return ec.resolvers.Query().Fancam(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1199,10 +1309,10 @@ func (ec *executionContext) _Query_fancams(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.([]*model.Fancam)
 	fc.Result = res
-	return ec.marshalNFancam2ᚕᚖgithubᚗcomᚋjikkaemᚋjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐFancam(ctx, field.Selections, res)
+	return ec.marshalNFancam2ᚕᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐFancam(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_fancams(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_fancam(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -1216,6 +1326,8 @@ func (ec *executionContext) fieldContext_Query_fancams(ctx context.Context, fiel
 				return ec.fieldContext_Fancam_title(ctx, field)
 			case "ytLink":
 				return ec.fieldContext_Fancam_ytLink(ctx, field)
+			case "artists":
+				return ec.fieldContext_Fancam_artists(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Fancam", field.Name)
 		},
@@ -1223,8 +1335,8 @@ func (ec *executionContext) fieldContext_Query_fancams(ctx context.Context, fiel
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_artists(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_artists(ctx, field)
+func (ec *executionContext) _Query_artist(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_artist(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -1237,7 +1349,7 @@ func (ec *executionContext) _Query_artists(ctx context.Context, field graphql.Co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Artists(rctx)
+		return ec.resolvers.Query().Artist(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1251,10 +1363,10 @@ func (ec *executionContext) _Query_artists(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.([]*model.Artist)
 	fc.Result = res
-	return ec.marshalNArtist2ᚕᚖgithubᚗcomᚋjikkaemᚋjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐArtist(ctx, field.Selections, res)
+	return ec.marshalNArtist2ᚕᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐArtist(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_artists(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_artist(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -1291,6 +1403,66 @@ func (ec *executionContext) fieldContext_Query_artists(ctx context.Context, fiel
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Artist", field.Name)
 		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_user(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_user(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().User(rctx, fc.Args["input"].(model.SingleUser))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.User)
+	fc.Result = res
+	return ec.marshalOUser2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_user(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_User_id(ctx, field)
+			case "name":
+				return ec.fieldContext_User_name(ctx, field)
+			case "email":
+				return ec.fieldContext_User_email(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_user_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
 	}
 	return fc, nil
 }
@@ -3365,6 +3537,34 @@ func (ec *executionContext) unmarshalInputNewUser(ctx context.Context, obj inter
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputSingleUser(ctx context.Context, obj interface{}) (model.SingleUser, error) {
+	var it model.SingleUser
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"id"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			it.ID, err = ec.unmarshalNID2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 // endregion **************************** input.gotpl *****************************
 
 // region    ************************** interface.gotpl ***************************
@@ -3498,6 +3698,13 @@ func (ec *executionContext) _Fancam(ctx context.Context, sel ast.SelectionSet, o
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "artists":
+
+			out.Values[i] = ec._Fancam_artists(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3567,7 +3774,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
-		case "fancams":
+		case "fancam":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -3576,7 +3783,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_fancams(ctx, field)
+				res = ec._Query_fancam(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -3590,7 +3797,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "artists":
+		case "artist":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -3599,10 +3806,30 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_artists(ctx, field)
+				res = ec._Query_artist(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "user":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_user(ctx, field)
 				return res
 			}
 
@@ -3996,7 +4223,7 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNArtist2ᚕᚖgithubᚗcomᚋjikkaemᚋjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐArtist(ctx context.Context, sel ast.SelectionSet, v []*model.Artist) graphql.Marshaler {
+func (ec *executionContext) marshalNArtist2ᚕᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐArtist(ctx context.Context, sel ast.SelectionSet, v []*model.Artist) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -4020,7 +4247,7 @@ func (ec *executionContext) marshalNArtist2ᚕᚖgithubᚗcomᚋjikkaemᚋjikkae
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOArtist2ᚖgithubᚗcomᚋjikkaemᚋjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐArtist(ctx, sel, v[i])
+			ret[i] = ec.marshalOArtist2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐArtist(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -4032,6 +4259,60 @@ func (ec *executionContext) marshalNArtist2ᚕᚖgithubᚗcomᚋjikkaemᚋjikkae
 	wg.Wait()
 
 	return ret
+}
+
+func (ec *executionContext) marshalNArtist2ᚕᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐArtistᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Artist) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNArtist2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐArtist(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNArtist2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐArtist(ctx context.Context, sel ast.SelectionSet, v *model.Artist) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Artist(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
@@ -4049,7 +4330,7 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) marshalNFancam2ᚕᚖgithubᚗcomᚋjikkaemᚋjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐFancam(ctx context.Context, sel ast.SelectionSet, v []*model.Fancam) graphql.Marshaler {
+func (ec *executionContext) marshalNFancam2ᚕᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐFancam(ctx context.Context, sel ast.SelectionSet, v []*model.Fancam) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -4073,7 +4354,7 @@ func (ec *executionContext) marshalNFancam2ᚕᚖgithubᚗcomᚋjikkaemᚋjikkae
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOFancam2ᚖgithubᚗcomᚋjikkaemᚋjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐFancam(ctx, sel, v[i])
+			ret[i] = ec.marshalOFancam2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐFancam(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -4102,6 +4383,11 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
+func (ec *executionContext) unmarshalNSingleUser2jikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐSingleUser(ctx context.Context, v interface{}) (model.SingleUser, error) {
+	res, err := ec.unmarshalInputSingleUser(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
 	res, err := graphql.UnmarshalString(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -4117,11 +4403,11 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 	return res
 }
 
-func (ec *executionContext) marshalNUser2githubᚗcomᚋjikkaemᚋjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v model.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2jikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v model.User) graphql.Marshaler {
 	return ec._User(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋjikkaemᚋjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -4384,7 +4670,7 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 	return res
 }
 
-func (ec *executionContext) marshalOArtist2ᚖgithubᚗcomᚋjikkaemᚋjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐArtist(ctx context.Context, sel ast.SelectionSet, v *model.Artist) graphql.Marshaler {
+func (ec *executionContext) marshalOArtist2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐArtist(ctx context.Context, sel ast.SelectionSet, v *model.Artist) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -4417,7 +4703,7 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return res
 }
 
-func (ec *executionContext) marshalOFancam2ᚖgithubᚗcomᚋjikkaemᚋjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐFancam(ctx context.Context, sel ast.SelectionSet, v *model.Fancam) graphql.Marshaler {
+func (ec *executionContext) marshalOFancam2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐFancam(ctx context.Context, sel ast.SelectionSet, v *model.Fancam) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -4440,7 +4726,7 @@ func (ec *executionContext) marshalOFloat2ᚖfloat64(ctx context.Context, sel as
 	return graphql.WrapContextMarshaler(ctx, res)
 }
 
-func (ec *executionContext) unmarshalOGender2ᚖgithubᚗcomᚋjikkaemᚋjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐGender(ctx context.Context, v interface{}) (*model.Gender, error) {
+func (ec *executionContext) unmarshalOGender2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐGender(ctx context.Context, v interface{}) (*model.Gender, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -4449,7 +4735,7 @@ func (ec *executionContext) unmarshalOGender2ᚖgithubᚗcomᚋjikkaemᚋjikkaem
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOGender2ᚖgithubᚗcomᚋjikkaemᚋjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐGender(ctx context.Context, sel ast.SelectionSet, v *model.Gender) graphql.Marshaler {
+func (ec *executionContext) marshalOGender2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐGender(ctx context.Context, sel ast.SelectionSet, v *model.Gender) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -4472,7 +4758,7 @@ func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.Sele
 	return res
 }
 
-func (ec *executionContext) unmarshalONewUser2ᚖgithubᚗcomᚋjikkaemᚋjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐNewUser(ctx context.Context, v interface{}) (*model.NewUser, error) {
+func (ec *executionContext) unmarshalONewUser2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐNewUser(ctx context.Context, v interface{}) (*model.NewUser, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -4510,6 +4796,13 @@ func (ec *executionContext) marshalOTime2ᚖtimeᚐTime(ctx context.Context, sel
 	}
 	res := graphql.MarshalTime(*v)
 	return res
+}
+
+func (ec *executionContext) marshalOUser2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._User(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalO__EnumValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐEnumValueᚄ(ctx context.Context, sel ast.SelectionSet, v []introspection.EnumValue) graphql.Marshaler {

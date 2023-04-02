@@ -26,14 +26,19 @@ type Artist struct {
 }
 
 type Fancam struct {
-	ID     string `json:"id"`
-	Title  string `json:"title"`
-	YtLink string `json:"ytLink"`
+	ID      string    `json:"id"`
+	Title   string    `json:"title"`
+	YtLink  string    `json:"ytLink"`
+	Artists []*Artist `json:"artists"`
 }
 
 type NewUser struct {
 	Name  string `json:"name"`
 	Email string `json:"email"`
+}
+
+type SingleUser struct {
+	ID string `json:"id"`
 }
 
 type User struct {

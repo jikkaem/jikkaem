@@ -8,7 +8,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/jikkaem/jikkaem/internal/services/gql-gateway/graph/model"
+	"jikkaem/internal/services/gql-gateway/graph/model"
 )
 
 // CreateUser is the resolver for the createUser field.
@@ -16,14 +16,19 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input *model.NewUser)
 	panic(fmt.Errorf("not implemented: CreateUser - createUser"))
 }
 
-// Fancams is the resolver for the fancams field.
-func (r *queryResolver) Fancams(ctx context.Context) ([]*model.Fancam, error) {
-	panic(fmt.Errorf("not implemented: Fancams - fancams"))
+// Fancam is the resolver for the fancam field.
+func (r *queryResolver) Fancam(ctx context.Context) ([]*model.Fancam, error) {
+	panic(fmt.Errorf("not implemented: Fancam - fancam"))
 }
 
-// Artists is the resolver for the artists field.
-func (r *queryResolver) Artists(ctx context.Context) ([]*model.Artist, error) {
-	panic(fmt.Errorf("not implemented: Artists - artists"))
+// Artist is the resolver for the artist field.
+func (r *queryResolver) Artist(ctx context.Context) ([]*model.Artist, error) {
+	panic(fmt.Errorf("not implemented: Artist - artist"))
+}
+
+// User is the resolver for the user field.
+func (r *queryResolver) User(ctx context.Context, input model.SingleUser) (*model.User, error) {
+	panic(fmt.Errorf("not implemented: User - user"))
 }
 
 // Mutation returns MutationResolver implementation.

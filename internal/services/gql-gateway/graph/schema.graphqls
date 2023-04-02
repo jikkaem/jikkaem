@@ -17,6 +17,7 @@ type Fancam {
   id: ID!
   title: String!
   ytLink: String!
+  artists: [Artist!]!
 }
 
 type Artist {
@@ -36,8 +37,13 @@ type Artist {
 }
 
 type Query {
-  fancams: [Fancam]!
-  artists: [Artist]!
+  fancam: [Fancam]!
+  artist: [Artist]!
+  user(input: SingleUser!): User
+}
+
+input SingleUser {
+  id: ID!
 }
 
 input NewUser {
