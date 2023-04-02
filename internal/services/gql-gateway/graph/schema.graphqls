@@ -1,0 +1,50 @@
+# https://gqlgen.com/getting-started/
+
+scalar Time
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+}
+
+type Fancam {
+  id: ID!
+  title: String!
+  ytLink: String!
+}
+
+type Artist {
+  id: ID!
+  stageName: String!
+  fullName: String!
+  koreanName: String!
+  koreanStageName: String!
+  dob: Time
+  group: String
+  country: String!
+  height: Int # add unit type CM
+  weight: Float
+  birthplace: String!
+  gender: Gender
+  instagram: String # link to their profile? username?
+}
+
+type Query {
+  fancams: [Fancam]!
+  artists: [Artist]!
+}
+
+input NewUser {
+  name: String!
+  email: String!
+}
+
+type Mutation {
+  createUser(input: NewUser): User!
+}
