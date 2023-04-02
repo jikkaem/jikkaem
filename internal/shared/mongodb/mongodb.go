@@ -15,7 +15,7 @@ func GetColl(collName string) (*mongo.Collection, error) {
 	return client.Database(database).Collection(collName), err
 }
 
-const uri = "mongodb://localhost:3500/mongogin-db"
+const uri = "mongodb://localhost:5000/jikkaem-userdb"
 
 var MongoClient *mongo.Client
 var MongoClientError error
