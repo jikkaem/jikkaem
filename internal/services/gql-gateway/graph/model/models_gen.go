@@ -21,7 +21,7 @@ type Artist struct {
 	Height          *int       `json:"height,omitempty"`
 	Weight          *float64   `json:"weight,omitempty"`
 	Birthplace      string     `json:"birthplace"`
-	Gender          *Gender    `json:"gender,omitempty"`
+	Gender          Gender     `json:"gender"`
 	Instagram       *string    `json:"instagram,omitempty"`
 }
 

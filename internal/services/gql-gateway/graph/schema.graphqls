@@ -32,7 +32,7 @@ type Artist {
   height: Int # add unit type CM
   weight: Float
   birthplace: String!
-  gender: Gender
+  gender: Gender!
   instagram: String # link to their profile? username?
 }
 

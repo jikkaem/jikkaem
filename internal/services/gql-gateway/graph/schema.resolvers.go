@@ -7,7 +7,6 @@ package graph
 import (
 	"context"
 	"fmt"
-
 	"jikkaem/internal/services/gql-gateway/graph/model"
 )
 

@@ -953,11 +953,14 @@ func (ec *executionContext) _Artist_gender(ctx context.Context, field graphql.Co
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Gender)
+	res := resTmp.(model.Gender)
 	fc.Result = res
-	return ec.marshalOGender2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐGender(ctx, field.Selections, res)
+	return ec.marshalNGender2jikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐGender(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Artist_gender(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3652,6 +3655,9 @@ func (ec *executionContext) _Artist(ctx context.Context, sel ast.SelectionSet, o
 
 			out.Values[i] = ec._Artist_gender(ctx, field, obj)
 
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "instagram":
 
 			out.Values[i] = ec._Artist_instagram(ctx, field, obj)
@@ -4368,6 +4374,16 @@ func (ec *executionContext) marshalNFancam2ᚕᚖjikkaemᚋinternalᚋservices�
 	return ret
 }
 
+func (ec *executionContext) unmarshalNGender2jikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐGender(ctx context.Context, v interface{}) (model.Gender, error) {
+	var res model.Gender
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNGender2jikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐGender(ctx context.Context, sel ast.SelectionSet, v model.Gender) graphql.Marshaler {
+	return v
+}
+
 func (ec *executionContext) unmarshalNID2string(ctx context.Context, v interface{}) (string, error) {
 	res, err := graphql.UnmarshalID(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -4724,22 +4740,6 @@ func (ec *executionContext) marshalOFloat2ᚖfloat64(ctx context.Context, sel as
 	}
 	res := graphql.MarshalFloatContext(*v)
 	return graphql.WrapContextMarshaler(ctx, res)
-}
-
-func (ec *executionContext) unmarshalOGender2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐGender(ctx context.Context, v interface{}) (*model.Gender, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var res = new(model.Gender)
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOGender2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐGender(ctx context.Context, sel ast.SelectionSet, v *model.Gender) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return v
 }
 
 func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {
