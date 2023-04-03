@@ -7,7 +7,7 @@ package graph
 import (
 	"context"
 	"fmt"
-	"jikkaem/internal/services/gql-gateway/graph/model"
+	gqlmodel "jikkaem/internal/services/gql-gateway/graph/model"
 	pb "jikkaem/internal/shared/proto/user"
 	"log"
 	"time"
@@ -17,7 +17,7 @@ import (
 )
 
 // CreateUser is the resolver for the createUser field.
-func (r *mutationResolver) CreateUser(_ context.Context, input *model.NewUser) (*model.User, error) {
+func (r *mutationResolver) CreateUser(ctx context.Context, input *gqlmodel.NewUser) (*gqlmodel.User, error) {
 	conn, err := grpc.Dial("localhost:6000", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
@@ -38,7 +38,7 @@ func (r *mutationResolver) CreateUser(_ context.Context, input *model.NewUser) (
 		log.Fatalf("could not create user: %v", err)
 	}
 
-	gqlUser := &model.User{
+	gqlUser := &gqlmodel.User{
 		ID:    res.Id,
 		Name:  res.Name,
 		Email: res.Email,
@@ -48,17 +48,17 @@ func (r *mutationResolver) CreateUser(_ context.Context, input *model.NewUser) (
 }
 
 // Fancam is the resolver for the fancam field.
-func (r *queryResolver) Fancam(ctx context.Context) ([]*model.Fancam, error) {
+func (r *queryResolver) Fancam(ctx context.Context) ([]*gqlmodel.Fancam, error) {
 	panic(fmt.Errorf("not implemented: Fancam - fancam"))
 }
 
 // Artist is the resolver for the artist field.
-func (r *queryResolver) Artist(ctx context.Context) ([]*model.Artist, error) {
+func (r *queryResolver) Artist(ctx context.Context) ([]*gqlmodel.Artist, error) {
 	panic(fmt.Errorf("not implemented: Artist - artist"))
 }
 
 // User is the resolver for the user field.
-func (r *queryResolver) User(_ context.Context, input model.SingleUser) (*model.User, error) {
+func (r *queryResolver) User(ctx context.Context, input gqlmodel.SingleUser) (*gqlmodel.User, error) {
 	conn, err := grpc.Dial("localhost:6000", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
@@ -78,7 +78,7 @@ func (r *queryResolver) User(_ context.Context, input model.SingleUser) (*model.
 		log.Fatalf("could not get user: %v", err)
 	}
 
-	gqlUser := &model.User{
+	gqlUser := &gqlmodel.User{
 		ID:    res.Id,
 		Name:  res.Name,
 		Email: res.Email,
