@@ -39,10 +39,10 @@ type Artist {
 type Query {
   fancam: [Fancam]!
   artist: [Artist]!
-  user(input: SingleUser!): User
+  user(input: SingleID!): User
 }
 
-input SingleUser {
+input SingleID {
   id: ID!
 }
 
@@ -52,5 +52,6 @@ input NewUser {
 }
 
 type Mutation {
-  createUser(input: NewUser): User!
+  createUser(input: NewUser!): User!
+  deleteUser(input: SingleID!): User!
 }

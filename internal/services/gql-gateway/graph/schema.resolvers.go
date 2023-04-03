@@ -17,7 +17,7 @@ import (
 )
 
 // CreateUser is the resolver for the createUser field.
-func (r *mutationResolver) CreateUser(ctx context.Context, input *gqlmodel.NewUser) (*gqlmodel.User, error) {
+func (r *mutationResolver) CreateUser(ctx context.Context, input gqlmodel.NewUser) (*gqlmodel.User, error) {
 	conn, err := grpc.Dial("localhost:6000", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
@@ -47,6 +47,35 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input *gqlmodel.NewUs
 	return gqlUser, nil
 }
 
+// DeleteUser is the resolver for the deleteUser field.
+func (r *mutationResolver) DeleteUser(ctx context.Context, input gqlmodel.SingleID) (*gqlmodel.User, error) {
+	conn, err := grpc.Dial("localhost:6000", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer conn.Close()
+	c := pb.NewUserClient(conn)
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	in := &pb.ID{
+		Id: input.ID,
+	}
+
+	res, err := c.DeleteUser(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+
+	gqlUser := &gqlmodel.User{
+		ID:    res.Id,
+		Name:  res.Name,
+		Email: res.Email,
+	}
+	return gqlUser, nil
+}
+
 // Fancam is the resolver for the fancam field.
 func (r *queryResolver) Fancam(ctx context.Context) ([]*gqlmodel.Fancam, error) {
 	panic(fmt.Errorf("not implemented: Fancam - fancam"))
@@ -58,7 +87,7 @@ func (r *queryResolver) Artist(ctx context.Context) ([]*gqlmodel.Artist, error) 
 }
 
 // User is the resolver for the user field.
-func (r *queryResolver) User(ctx context.Context, input gqlmodel.SingleUser) (*gqlmodel.User, error) {
+func (r *queryResolver) User(ctx context.Context, input gqlmodel.SingleID) (*gqlmodel.User, error) {
 	conn, err := grpc.Dial("localhost:6000", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)

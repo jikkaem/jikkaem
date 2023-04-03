@@ -37,7 +37,7 @@ type NewUser struct {
 	Email string `json:"email"`
 }
 
-type SingleUser struct {
+type SingleID struct {
 	ID string `json:"id"`
 }
 

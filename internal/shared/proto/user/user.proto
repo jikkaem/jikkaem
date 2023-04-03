@@ -5,6 +5,7 @@ option go_package = "jikkaem/internal/shared/proto";
 service User {
   rpc GetUserByID (ID) returns (UserObjectWithID) {}
   rpc CreateUser (UserObject) returns (UserObjectWithID) {}
+  rpc DeleteUser (ID) returns (UserObjectWithID) {}
 }
 
 message UserObject {
