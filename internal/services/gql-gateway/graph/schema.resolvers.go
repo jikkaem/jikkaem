@@ -7,8 +7,8 @@ package graph
 import (
 	"context"
 	"fmt"
+	pb "jikkaem/internal/proto/user"
 	gqlmodel "jikkaem/internal/services/gql-gateway/graph/model"
-	pb "jikkaem/internal/shared/proto/user"
 	"log"
 	"time"
 

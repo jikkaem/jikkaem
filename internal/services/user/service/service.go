@@ -2,8 +2,8 @@ package userservice
 
 import (
 	"context"
-	model "jikkaem/internal/shared/model"
-	"jikkaem/internal/shared/mongodb"
+	model "jikkaem/internal/model"
+	"jikkaem/internal/mongodb"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"

@@ -3,9 +3,9 @@ package server
 import (
 	"context"
 
+	"jikkaem/internal/model"
+	pb "jikkaem/internal/proto/user"
 	svc "jikkaem/internal/services/user/service"
-	"jikkaem/internal/shared/model"
-	pb "jikkaem/internal/shared/proto/user"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )

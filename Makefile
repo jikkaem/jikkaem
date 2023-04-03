@@ -4,7 +4,7 @@ gql-gateway:
 protocUser:
 	protoc --go_out=. --go_opt=paths=source_relative \
     --go-grpc_out=. --go-grpc_opt=paths=source_relative \
-    internal/shared/proto/user/user.proto
+    internal/proto/user/user.proto
 
 devUser:
 	air --build.cmd "go build -o bin/user cmd/user/main.go" --build.bin "./bin/user"
