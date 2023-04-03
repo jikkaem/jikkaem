@@ -1,47 +1,40 @@
-package service
+package userservice
 
 import (
 	"context"
-	"fmt"
-	"jikkaem/internal/shared/models"
+	model "jikkaem/internal/shared/model"
 	"jikkaem/internal/shared/mongodb"
-	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func GetUserById(id string) (*models.User, error) {
+func GetUserById(id string) (*model.User, error) {
 	userColl, err := mongodb.GetColl("users")
 	if err != nil {
 		return nil, err
 	}
-	var result models.User
+
+	var result model.User
 	filter := bson.D{{Key: "_id", Value: id}}
 	if err = userColl.FindOne(context.TODO(), filter).Decode(&result); err != nil {
-		if err == mongo.ErrNoDocuments {
-			fmt.Println("No document found.")
-		}
-		log.Fatalf("could not get user from db")
+		return nil, err
 	}
 	return &result, nil
 }
 
-func CreateUser(user *models.User) (*models.User, error) {
+func CreateUser(user *model.User) (*model.User, error) {
 	userColl, err := mongodb.GetColl("users")
 	if err != nil {
 		return nil, err
 	}
 
-	userWithID := &models.User{
-		ID:    primitive.NewObjectID(),
-		Name:  user.Name,
-		Email: user.Email,
-	}
-	_, err = userColl.InsertOne(context.TODO(), userWithID)
+	user.ID = primitive.NewObjectID()
+
+	_, err = userColl.InsertOne(context.TODO(), user)
 	if err != nil {
-		log.Fatalf("could not insert user into db")
+		return nil, err
 	}
-	return userWithID, nil
+
+	return user, nil
 }

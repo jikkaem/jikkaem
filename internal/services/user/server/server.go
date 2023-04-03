@@ -4,7 +4,7 @@ import (
 	"context"
 
 	svc "jikkaem/internal/services/user/service"
-	"jikkaem/internal/shared/models"
+	"jikkaem/internal/shared/model"
 	pb "jikkaem/internal/shared/proto/user"
 )
 
@@ -19,14 +19,14 @@ func (s *UserServer) GetUserById(ctx context.Context, id *pb.ID) (*pb.UserObject
 	}
 
 	return &pb.UserObjectWithID{
-		Id:    result.ID.String(),
+		Id:    result.ID.Hex(),
 		Name:  result.Name,
 		Email: result.Email,
 	}, nil
 }
 
 func (s *UserServer) CreateUser(ctx context.Context, user *pb.UserObject) (*pb.UserObjectWithID, error) {
-	mappedUser := &models.User{
+	mappedUser := &model.User{
 		Name:  user.Name,
 		Email: user.Email,
 	}
@@ -37,7 +37,7 @@ func (s *UserServer) CreateUser(ctx context.Context, user *pb.UserObject) (*pb.U
 	}
 
 	return &pb.UserObjectWithID{
-		Id:    result.ID.String(),
+		Id:    result.ID.Hex(),
 		Name:  result.Name,
 		Email: result.Email,
 	}, nil
