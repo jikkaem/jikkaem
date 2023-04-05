@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+option go_package = "jikkaem/internal/shared/proto";
+
+import "google/protobuf/timestamp.proto";
+
+service Fancam {
+  rpc GetFancamByID (ID) returns (FancamObjectWithID) {}
+  rpc CreateFancams (FancamObject) returns (FancamObjectWithID) {}
+  rpc DeleteFancam (ID) returns (FancamObjectWithID) {}
+}
+
+enum Gender {
+    MALE = 0;
+    FEMALE = 1;
+}
+
+message FancamObject {
+  string name = 1;
+  string email = 2;
+}
+
+message FancamObjectWithID {
+  string id = 1;
+  string name = 2;
+  string email = 3;
+}
+
+message ArtistObject {
+    string stage_name = 1;
+    string full_name = 2;
+    string korean_name = 3;
+    string korean_stage_name = 4;
+    google.protobuf.Timestamp dob = 5;
+    string group = 6;
+    string country = 7;
+    int32 height = 8;
+    int32 weight = 9;
+    string birthplace = 10;
+    Gender gender = 11;
+    string instagram = 12;
+}
+
+message ArtistObjectWithID {
+    string id = 1;
+    string stage_name = 2;
+    string full_name = 3;
+    string korean_name = 4;
+    string korean_stage_name = 5;
+    google.protobuf.Timestamp dob = 6;
+    string group = 7;
+    string country = 8;
+    int32 height = 9;
+    int32 weight = 10;
+    string birthplace = 11;
+    Gender gender = 12;
+    string instagram = 13;
+}
+
+message ID {
+    string id = 1;
+}
