@@ -6,7 +6,7 @@ import (
 	"net"
 
 	pb "jikkaem/internal/proto/user"
-	"jikkaem/internal/services/user/server"
+	"jikkaem/internal/services/user"
 
 	"google.golang.org/grpc"
 )
@@ -18,7 +18,7 @@ func main() {
 	}
 
 	s := grpc.NewServer()
-	pb.RegisterUserServer(s, &server.UserServer{})
+	pb.RegisterUserServer(s, &user.UserServer{})
 
 	log.Printf("User server listening at %v", lis.Addr())
 	if err := s.Serve(lis); err != nil {
