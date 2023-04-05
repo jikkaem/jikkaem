@@ -3,17 +3,12 @@ syntax = "proto3";
 option go_package = "jikkaem/internal/proto";
 
 service User {
-  rpc GetUserByID (ID) returns (UserObjectWithID) {}
-  rpc CreateUser (UserObject) returns (UserObjectWithID) {}
-  rpc DeleteUser (ID) returns (UserObjectWithID) {}
+  rpc GetUserByID (ID) returns (UserObject) {}
+  rpc CreateUser (UserObject) returns (UserObject) {}
+  rpc DeleteUser (ID) returns (UserObject) {}
 }
 
 message UserObject {
-  string name = 1;
-  string email = 2;
-}
-
-message UserObjectWithID {
   string id = 1;
   string name = 2;
   string email = 3;

@@ -22,9 +22,9 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserClient interface {
-	GetUserByID(ctx context.Context, in *ID, opts ...grpc.CallOption) (*UserObjectWithID, error)
-	CreateUser(ctx context.Context, in *UserObject, opts ...grpc.CallOption) (*UserObjectWithID, error)
-	DeleteUser(ctx context.Context, in *ID, opts ...grpc.CallOption) (*UserObjectWithID, error)
+	GetUserByID(ctx context.Context, in *ID, opts ...grpc.CallOption) (*UserObject, error)
+	CreateUser(ctx context.Context, in *UserObject, opts ...grpc.CallOption) (*UserObject, error)
+	DeleteUser(ctx context.Context, in *ID, opts ...grpc.CallOption) (*UserObject, error)
 }
 
 type userClient struct {
@@ -35,8 +35,8 @@ func NewUserClient(cc grpc.ClientConnInterface) UserClient {
 	return &userClient{cc}
 }
 
-func (c *userClient) GetUserByID(ctx context.Context, in *ID, opts ...grpc.CallOption) (*UserObjectWithID, error) {
-	out := new(UserObjectWithID)
+func (c *userClient) GetUserByID(ctx context.Context, in *ID, opts ...grpc.CallOption) (*UserObject, error) {
+	out := new(UserObject)
 	err := c.cc.Invoke(ctx, "/User/GetUserByID", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -44,8 +44,8 @@ func (c *userClient) GetUserByID(ctx context.Context, in *ID, opts ...grpc.CallO
 	return out, nil
 }
 
-func (c *userClient) CreateUser(ctx context.Context, in *UserObject, opts ...grpc.CallOption) (*UserObjectWithID, error) {
-	out := new(UserObjectWithID)
+func (c *userClient) CreateUser(ctx context.Context, in *UserObject, opts ...grpc.CallOption) (*UserObject, error) {
+	out := new(UserObject)
 	err := c.cc.Invoke(ctx, "/User/CreateUser", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -53,8 +53,8 @@ func (c *userClient) CreateUser(ctx context.Context, in *UserObject, opts ...grp
 	return out, nil
 }
 
-func (c *userClient) DeleteUser(ctx context.Context, in *ID, opts ...grpc.CallOption) (*UserObjectWithID, error) {
-	out := new(UserObjectWithID)
+func (c *userClient) DeleteUser(ctx context.Context, in *ID, opts ...grpc.CallOption) (*UserObject, error) {
+	out := new(UserObject)
 	err := c.cc.Invoke(ctx, "/User/DeleteUser", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -66,9 +66,9 @@ func (c *userClient) DeleteUser(ctx context.Context, in *ID, opts ...grpc.CallOp
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
 type UserServer interface {
-	GetUserByID(context.Context, *ID) (*UserObjectWithID, error)
-	CreateUser(context.Context, *UserObject) (*UserObjectWithID, error)
-	DeleteUser(context.Context, *ID) (*UserObjectWithID, error)
+	GetUserByID(context.Context, *ID) (*UserObject, error)
+	CreateUser(context.Context, *UserObject) (*UserObject, error)
+	DeleteUser(context.Context, *ID) (*UserObject, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -76,13 +76,13 @@ type UserServer interface {
 type UnimplementedUserServer struct {
 }
 
-func (UnimplementedUserServer) GetUserByID(context.Context, *ID) (*UserObjectWithID, error) {
+func (UnimplementedUserServer) GetUserByID(context.Context, *ID) (*UserObject, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserByID not implemented")
 }
-func (UnimplementedUserServer) CreateUser(context.Context, *UserObject) (*UserObjectWithID, error) {
+func (UnimplementedUserServer) CreateUser(context.Context, *UserObject) (*UserObject, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
 }
-func (UnimplementedUserServer) DeleteUser(context.Context, *ID) (*UserObjectWithID, error) {
+func (UnimplementedUserServer) DeleteUser(context.Context, *ID) (*UserObject, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteUser not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
