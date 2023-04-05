@@ -6,6 +6,11 @@ protocUser:
     --go-grpc_out=. --go-grpc_opt=paths=source_relative \
     internal/proto/user/user.proto
 
+protocFancam:
+	protoc --go_out=. --go_opt=paths=source_relative \
+    --go-grpc_out=. --go-grpc_opt=paths=source_relative \
+    internal/proto/fancam/fancam.proto
+
 devUser:
 	air --build.cmd "go build -o bin/user cmd/user/main.go" --build.bin "./bin/user"
 
