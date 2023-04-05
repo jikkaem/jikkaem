@@ -29,8 +29,19 @@ type Artist struct {
 }
 
 type Fancam struct {
-	ID      primitive.ObjectID `bson:"_id"`
-	Title   string             `bson:"title"`
-	YtLink  string             `bson:"ytLink"`
-	Artists []Artist           `bson:"artists"`
+	ID            primitive.ObjectID `bson:"_id"`
+	Title         string             `bson:"title"`
+	YtLink        string             `bson:"ytLink"`
+	RecordDate    time.Time          `bson:"recordDate,omitempty"`
+	Artists       []Artist           `bson:"artists"`
+	SuggestedTags []SuggestedTags    `bson:"suggestedTags,omitempty"`
+}
+
+type SuggestedTags struct {
+	EnArtist []string `bson:"enArtist,omitempty"`
+	EnGroup  []string `bson:"enGroup,omitempty"`
+	EnSong   []string `bson:"enSong,omitempty"`
+	KrArtist []string `bson:"krArtist,omitempty"`
+	KrGroup  []string `bson:"krGroup,omitempty"`
+	KrSong   []string `bson:"krSong,omitempty"`
 }
