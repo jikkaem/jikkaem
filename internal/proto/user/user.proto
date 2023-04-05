@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "jikkaem/internal/shared/proto";
+option go_package = "jikkaem/internal/proto";
 
 service User {
   rpc GetUserByID (ID) returns (UserObjectWithID) {}
