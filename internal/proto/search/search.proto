@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option go_package = "jikkaem/internal/proto";
+
+
+service Search {
+  rpc SearchBar (Text) returns (FancamList) {}
+}
+
+message FancamList {
+    repeated FancamObjectWithID fancams = 1;
+}
+
+message FancamObjectWithID {
+  string id = 1;
+  string title = 2;
+}
+
+message Text {
+    string input = 1;
+}
