@@ -22,9 +22,9 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type FancamClient interface {
-	GetFancamByID(ctx context.Context, in *ID, opts ...grpc.CallOption) (*FancamObjectWithID, error)
-	CreateFancams(ctx context.Context, in *FancamList, opts ...grpc.CallOption) (*FancamListWithID, error)
-	DeleteFancam(ctx context.Context, in *ID, opts ...grpc.CallOption) (*FancamObjectWithID, error)
+	GetFancamByID(ctx context.Context, in *ID, opts ...grpc.CallOption) (*FancamObject, error)
+	CreateFancams(ctx context.Context, in *FancamList, opts ...grpc.CallOption) (*FancamList, error)
+	DeleteFancam(ctx context.Context, in *ID, opts ...grpc.CallOption) (*FancamObject, error)
 }
 
 type fancamClient struct {
@@ -35,8 +35,8 @@ func NewFancamClient(cc grpc.ClientConnInterface) FancamClient {
 	return &fancamClient{cc}
 }
 
-func (c *fancamClient) GetFancamByID(ctx context.Context, in *ID, opts ...grpc.CallOption) (*FancamObjectWithID, error) {
-	out := new(FancamObjectWithID)
+func (c *fancamClient) GetFancamByID(ctx context.Context, in *ID, opts ...grpc.CallOption) (*FancamObject, error) {
+	out := new(FancamObject)
 	err := c.cc.Invoke(ctx, "/Fancam/GetFancamByID", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -44,8 +44,8 @@ func (c *fancamClient) GetFancamByID(ctx context.Context, in *ID, opts ...grpc.C
 	return out, nil
 }
 
-func (c *fancamClient) CreateFancams(ctx context.Context, in *FancamList, opts ...grpc.CallOption) (*FancamListWithID, error) {
-	out := new(FancamListWithID)
+func (c *fancamClient) CreateFancams(ctx context.Context, in *FancamList, opts ...grpc.CallOption) (*FancamList, error) {
+	out := new(FancamList)
 	err := c.cc.Invoke(ctx, "/Fancam/CreateFancams", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -53,8 +53,8 @@ func (c *fancamClient) CreateFancams(ctx context.Context, in *FancamList, opts .
 	return out, nil
 }
 
-func (c *fancamClient) DeleteFancam(ctx context.Context, in *ID, opts ...grpc.CallOption) (*FancamObjectWithID, error) {
-	out := new(FancamObjectWithID)
+func (c *fancamClient) DeleteFancam(ctx context.Context, in *ID, opts ...grpc.CallOption) (*FancamObject, error) {
+	out := new(FancamObject)
 	err := c.cc.Invoke(ctx, "/Fancam/DeleteFancam", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -66,9 +66,9 @@ func (c *fancamClient) DeleteFancam(ctx context.Context, in *ID, opts ...grpc.Ca
 // All implementations must embed UnimplementedFancamServer
 // for forward compatibility
 type FancamServer interface {
-	GetFancamByID(context.Context, *ID) (*FancamObjectWithID, error)
-	CreateFancams(context.Context, *FancamList) (*FancamListWithID, error)
-	DeleteFancam(context.Context, *ID) (*FancamObjectWithID, error)
+	GetFancamByID(context.Context, *ID) (*FancamObject, error)
+	CreateFancams(context.Context, *FancamList) (*FancamList, error)
+	DeleteFancam(context.Context, *ID) (*FancamObject, error)
 	mustEmbedUnimplementedFancamServer()
 }
 
@@ -76,13 +76,13 @@ type FancamServer interface {
 type UnimplementedFancamServer struct {
 }
 
-func (UnimplementedFancamServer) GetFancamByID(context.Context, *ID) (*FancamObjectWithID, error) {
+func (UnimplementedFancamServer) GetFancamByID(context.Context, *ID) (*FancamObject, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetFancamByID not implemented")
 }
-func (UnimplementedFancamServer) CreateFancams(context.Context, *FancamList) (*FancamListWithID, error) {
+func (UnimplementedFancamServer) CreateFancams(context.Context, *FancamList) (*FancamList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateFancams not implemented")
 }
-func (UnimplementedFancamServer) DeleteFancam(context.Context, *ID) (*FancamObjectWithID, error) {
+func (UnimplementedFancamServer) DeleteFancam(context.Context, *ID) (*FancamObject, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteFancam not implemented")
 }
 func (UnimplementedFancamServer) mustEmbedUnimplementedFancamServer() {}

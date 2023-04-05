@@ -5,9 +5,9 @@ option go_package = "jikkaem/internal/proto";
 import "google/protobuf/timestamp.proto";
 
 service Fancam {
-  rpc GetFancamByID (ID) returns (FancamObjectWithID) {}
-  rpc CreateFancams (FancamList) returns (FancamListWithID) {}
-  rpc DeleteFancam (ID) returns (FancamObjectWithID) {}
+  rpc GetFancamByID (ID) returns (FancamObject) {}
+  rpc CreateFancams (FancamList) returns (FancamList) {}
+  rpc DeleteFancam (ID) returns (FancamObject) {}
 }
 
 enum Gender {
@@ -19,52 +19,40 @@ message FancamList {
   repeated FancamObject fancams = 1;
 }
 
-message FancamListWithID {
-  repeated FancamObjectWithID fancams = 1;
-}
-
 message FancamObject {
-  string name = 1;
-  string email = 2;
-}
-
-message FancamObjectWithID {
   string id = 1;
-  string name = 2;
-  string email = 3;
+  string title = 2;
+  string yt_link = 3;
+  google.protobuf.Timestamp record_date = 4;
+  repeated ArtistObject artists = 5;
+  repeated SuggestedTags suggested_tags = 6; 
 }
 
 message ArtistObject {
-    string stage_name = 1;
-    string full_name = 2;
-    string korean_name = 3;
-    string korean_stage_name = 4;
-    google.protobuf.Timestamp dob = 5;
-    string group = 6;
-    string country = 7;
-    int32 height = 8;
-    int32 weight = 9;
-    string birthplace = 10;
-    Gender gender = 11;
-    string instagram = 12;
+  string id = 1;
+  string stage_name = 2;
+  string full_name = 3;
+  string korean_name = 4;
+  string korean_stage_name = 5;
+  google.protobuf.Timestamp dob = 6;
+  string group = 7;
+  string country = 8;
+  int32 height = 9;
+  int32 weight = 10;
+  string birthplace = 11;
+  Gender gender = 12;
+  string instagram = 13;
 }
 
-message ArtistObjectWithID {
-    string id = 1;
-    string stage_name = 2;
-    string full_name = 3;
-    string korean_name = 4;
-    string korean_stage_name = 5;
-    google.protobuf.Timestamp dob = 6;
-    string group = 7;
-    string country = 8;
-    int32 height = 9;
-    int32 weight = 10;
-    string birthplace = 11;
-    Gender gender = 12;
-    string instagram = 13;
+message SuggestedTags {
+  repeated string en_artist = 1;
+  repeated string en_group = 2;
+  repeated string en_song = 3;
+  repeated string kr_artist = 4;
+  repeated string kr_group = 5;
+  repeated string kr_song = 6;
 }
 
 message ID {
-    string id = 1;
+  string id = 1;
 }
