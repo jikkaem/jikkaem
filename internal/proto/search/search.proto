@@ -8,7 +8,7 @@ service Search {
 }
 
 message FancamList {
-    repeated FancamObjectWithID fancams = 1;
+  repeated FancamObjectWithID fancams = 1;
 }
 
 message FancamObjectWithID {
@@ -17,5 +17,5 @@ message FancamObjectWithID {
 }
 
 message Text {
-    string input = 1;
+  string input = 1;
 }
