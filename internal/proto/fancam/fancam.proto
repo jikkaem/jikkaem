@@ -3,11 +3,13 @@ syntax = "proto3";
 option go_package = "jikkaem/internal/proto";
 
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
 
 service Fancam {
   rpc GetFancamByID (ID) returns (FancamObject) {}
-  rpc CreateFancams (FancamList) returns (FancamList) {}
-  rpc DeleteFancam (ID) returns (FancamObject) {}
+  rpc GetFancams (GetFancamsRequest) returns (FancamList) {}
+  rpc CreateFancams (FancamList) returns (google.protobuf.Empty) {}
+  rpc DeleteFancam (ID) returns (google.protobuf.Empty) {}
 }
 
 enum Gender {
@@ -26,6 +28,10 @@ message FancamObject {
   google.protobuf.Timestamp record_date = 4;
   repeated ArtistObject artists = 5;
   repeated SuggestedTags suggested_tags = 6; 
+}
+
+message GetFancamsRequest {
+  repeated string ids = 1;
 }
 
 message ArtistObject {
