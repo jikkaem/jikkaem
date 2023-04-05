@@ -6,13 +6,21 @@ import "google/protobuf/timestamp.proto";
 
 service Fancam {
   rpc GetFancamByID (ID) returns (FancamObjectWithID) {}
-  rpc CreateFancams (FancamObject) returns (FancamObjectWithID) {}
+  rpc CreateFancams (FancamList) returns (FancamListWithID) {}
   rpc DeleteFancam (ID) returns (FancamObjectWithID) {}
 }
 
 enum Gender {
     MALE = 0;
     FEMALE = 1;
+}
+
+message FancamList {
+  repeated FancamObject fancams = 1;
+}
+
+message FancamListWithID {
+  repeated FancamObjectWithID fancams = 1;
 }
 
 message FancamObject {
