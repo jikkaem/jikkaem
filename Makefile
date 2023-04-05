@@ -19,5 +19,8 @@ protocSearch:
 devUser:
 	air --build.cmd "go build -o bin/user cmd/user/main.go" --build.bin "./bin/user"
 
+devFancam:
+	air --build.cmd "go build -o bin/fancam cmd/fancam/main.go" --build.bin "./bin/fancam"
+
 devGw:
 	air --build.cmd "go build -o bin/gateway internal/services/gql-gateway/server.go" --build.bin "./bin/gateway"
