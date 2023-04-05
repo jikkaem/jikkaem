@@ -1,6 +1,7 @@
 # https://developers.google.com/explorer-help/code-samples#python
 
 import os
+from dotenv import load_dotenv
 import time
 from googleapiclient.discovery import build
 
@@ -34,7 +35,7 @@ def massageData(data):
 def main():
     api_service_name = "youtube"
     api_version = "v3"
-    developerKey = "AIzaSyDvr36bn93daf31wtSr-a3Gsw6Kpa0-_jc"
+    developerKey = os.environ["YT_API_KEY"]
 
     youtube = build(api_service_name, api_version, developerKey=developerKey)
 
