@@ -8,13 +8,14 @@ import "google/protobuf/empty.proto";
 service Fancam {
   rpc GetFancamByID (ID) returns (FancamObject) {}
   rpc GetFancams (GetFancamsRequest) returns (FancamList) {}
+  rpc GetLatest (LatestRequest) returns (FancamList) {}
   rpc CreateFancams (FancamList) returns (google.protobuf.Empty) {}
   rpc DeleteFancam (ID) returns (google.protobuf.Empty) {}
 }
 
 enum Gender {
-    MALE = 0;
-    FEMALE = 1;
+  MALE = 0;
+  FEMALE = 1;
 }
 
 message FancamList {
@@ -32,6 +33,11 @@ message FancamObject {
 
 message GetFancamsRequest {
   repeated string ids = 1;
+}
+
+message LatestRequest { 
+  // maximum value is 50
+  int32 max_results = 1; 
 }
 
 message ArtistObject {

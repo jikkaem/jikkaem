@@ -9,6 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -88,8 +89,7 @@ func (s *FancamServer) GetFancamByID(ctx context.Context, id *pb.ID) (*pb.Fancam
 func (s *FancamServer) GetFancams(ctx context.Context, input *pb.GetFancamsRequest) (*pb.FancamList, error) {
 	// Process input, convert to primitive.ObjectID
 	ids := input.GetIds()
-	lenIds := len(ids)
-	if lenIds > 50 {
+	if lenIds := len(ids); lenIds > 50 {
 		err := status.Errorf(codes.FailedPrecondition, "Number of IDs exceeded limit of 50, received %d", lenIds)
 		return nil, err
 	}
@@ -123,6 +123,89 @@ func (s *FancamServer) GetFancams(ctx context.Context, input *pb.GetFancamsReque
 		Fancams: []*pb.FancamObject{},
 	}
 
+	for _, result := range results {
+		var suggestedTags []*pb.SuggestedTags
+		for _, tag := range result.SuggestedTags {
+			mappedTag := &pb.SuggestedTags{
+				EnArtist: tag.EnArtist,
+				EnGroup:  tag.EnGroup,
+				EnSong:   tag.EnSong,
+				KrArtist: tag.KrArtist,
+				KrGroup:  tag.KrGroup,
+				KrSong:   tag.KrSong,
+			}
+			suggestedTags = append(suggestedTags, mappedTag)
+		}
+
+		var artists []*pb.ArtistObject
+		for _, artist := range result.Artists {
+			mappedArtist := &pb.ArtistObject{
+				Id:              artist.ID.Hex(),
+				StageName:       artist.StageName,
+				FullName:        artist.FullName,
+				KoreanName:      artist.KoreanName,
+				KoreanStageName: artist.KoreanStageName,
+				Dob:             timestamppb.New(artist.DOB),
+				Group:           artist.Group,
+				Country:         artist.Country,
+				Height:          int32(artist.Height),
+				Weight:          int32(artist.Weight),
+				Birthplace:      artist.Birthplace,
+				Gender:          pb.Gender(pb.Gender_value[artist.Gender]),
+				Instagram:       artist.Instagram,
+			}
+			artists = append(artists, mappedArtist)
+		}
+		tmp := &pb.FancamObject{
+			Id:            result.ID.Hex(),
+			Title:         result.Title,
+			YtLink:        result.YtLink,
+			RecordDate:    timestamppb.New(result.RecordDate),
+			Artists:       artists,
+			SuggestedTags: suggestedTags,
+		}
+		fancamList.Fancams = append(fancamList.Fancams, tmp)
+	}
+
+	return fancamList, err
+}
+
+func (s *FancamServer) GetLatest(ctx context.Context, input *pb.LatestRequest) (*pb.FancamList, error) {
+	// Validate max_results input
+	maxResults := input.GetMaxResults()
+	if maxResults > 50 {
+		err := status.Errorf(codes.FailedPrecondition, "maxResults received is greater than 50, received %d", maxResults)
+		return nil, err
+	}
+
+	// Get collection
+	coll, err := s.getColl("fancams")
+	if err != nil {
+		return nil, err
+	}
+
+	// Build query
+	// No filter
+	filter := bson.D{}
+	// Sorts entries from newest to oldest
+	opts := options.Find().SetSort(bson.D{{Key: "_id", Value: -1}})
+	// Sets limit on how many docs to fetch
+	opts = opts.SetLimit(int64(maxResults))
+	cursor, err := coll.Find(ctx, filter, opts)
+	if err != nil {
+		return nil, err
+	}
+
+	// Get results
+	var results []model.Fancam
+	if err = cursor.All(ctx, &results); err != nil {
+		return nil, err
+	}
+
+	// Map results into gRPC model
+	fancamList := &pb.FancamList{
+		Fancams: []*pb.FancamObject{},
+	}
 	for _, result := range results {
 		var suggestedTags []*pb.SuggestedTags
 		for _, tag := range result.SuggestedTags {

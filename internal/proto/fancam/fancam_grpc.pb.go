@@ -25,6 +25,7 @@ const _ = grpc.SupportPackageIsVersion7
 type FancamClient interface {
 	GetFancamByID(ctx context.Context, in *ID, opts ...grpc.CallOption) (*FancamObject, error)
 	GetFancams(ctx context.Context, in *GetFancamsRequest, opts ...grpc.CallOption) (*FancamList, error)
+	GetLatest(ctx context.Context, in *LatestRequest, opts ...grpc.CallOption) (*FancamList, error)
 	CreateFancams(ctx context.Context, in *FancamList, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DeleteFancam(ctx context.Context, in *ID, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
@@ -55,6 +56,15 @@ func (c *fancamClient) GetFancams(ctx context.Context, in *GetFancamsRequest, op
 	return out, nil
 }
 
+func (c *fancamClient) GetLatest(ctx context.Context, in *LatestRequest, opts ...grpc.CallOption) (*FancamList, error) {
+	out := new(FancamList)
+	err := c.cc.Invoke(ctx, "/Fancam/GetLatest", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *fancamClient) CreateFancams(ctx context.Context, in *FancamList, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, "/Fancam/CreateFancams", in, out, opts...)
@@ -79,6 +89,7 @@ func (c *fancamClient) DeleteFancam(ctx context.Context, in *ID, opts ...grpc.Ca
 type FancamServer interface {
 	GetFancamByID(context.Context, *ID) (*FancamObject, error)
 	GetFancams(context.Context, *GetFancamsRequest) (*FancamList, error)
+	GetLatest(context.Context, *LatestRequest) (*FancamList, error)
 	CreateFancams(context.Context, *FancamList) (*emptypb.Empty, error)
 	DeleteFancam(context.Context, *ID) (*emptypb.Empty, error)
 	mustEmbedUnimplementedFancamServer()
@@ -93,6 +104,9 @@ func (UnimplementedFancamServer) GetFancamByID(context.Context, *ID) (*FancamObj
 }
 func (UnimplementedFancamServer) GetFancams(context.Context, *GetFancamsRequest) (*FancamList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetFancams not implemented")
+}
+func (UnimplementedFancamServer) GetLatest(context.Context, *LatestRequest) (*FancamList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetLatest not implemented")
 }
 func (UnimplementedFancamServer) CreateFancams(context.Context, *FancamList) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateFancams not implemented")
@@ -149,6 +163,24 @@ func _Fancam_GetFancams_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Fancam_GetLatest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LatestRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FancamServer).GetLatest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Fancam/GetLatest",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FancamServer).GetLatest(ctx, req.(*LatestRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Fancam_CreateFancams_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(FancamList)
 	if err := dec(in); err != nil {
@@ -199,6 +231,10 @@ var Fancam_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetFancams",
 			Handler:    _Fancam_GetFancams_Handler,
+		},
+		{
+			MethodName: "GetLatest",
+			Handler:    _Fancam_GetLatest_Handler,
 		},
 		{
 			MethodName: "CreateFancams",
