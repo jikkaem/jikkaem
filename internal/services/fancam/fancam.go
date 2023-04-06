@@ -318,11 +318,11 @@ func (s *FancamServer) CreateFancams(ctx context.Context, input *pb.FancamList) 
 		return nil, err
 	}
 
-	return nil, nil
+	return &emptypb.Empty{}, nil
 }
 
 func (s *FancamServer) DeleteFancam(ctx context.Context, id *pb.ID) (*emptypb.Empty, error) {
-	return nil, nil
+	return &emptypb.Empty{}, nil
 }
 
 func (s *FancamServer) getColl(collName string) (*mongo.Collection, error) {
