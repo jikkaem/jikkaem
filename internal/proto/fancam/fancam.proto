@@ -32,7 +32,7 @@ message FancamObject {
   string rootThumbnail = 7;
   google.protobuf.Timestamp record_date = 8;
   repeated ArtistObject artists = 9;
-  repeated SuggestedTags suggested_tags = 10; 
+  SuggestedTags suggested_tags = 10; 
 }
 
 message GetFancamsRequest {

@@ -38,7 +38,7 @@ type Fancam struct {
 	RootThumbnail string             `bson:"rootThumbnail"`
 	RecordDate    time.Time          `bson:"recordDate,omitempty"`
 	Artists       []Artist           `bson:"artists"`
-	SuggestedTags []SuggestedTags    `bson:"suggestedTags,omitempty"`
+	SuggestedTags SuggestedTags      `bson:"suggestedTags,omitempty"`
 }
 
 type SuggestedTags struct {

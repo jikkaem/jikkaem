@@ -63,17 +63,13 @@ func (s *FancamServer) GetFancamByID(ctx context.Context, id *pb.ID) (*pb.Fancam
 	}
 
 	// Convert suggestedTags into grpc model
-	var suggestedTags []*pb.SuggestedTags
-	for _, tag := range result.SuggestedTags {
-		mappedTag := &pb.SuggestedTags{
-			EnArtist: tag.EnArtist,
-			EnGroup:  tag.EnGroup,
-			EnSong:   tag.EnSong,
-			KrArtist: tag.KrArtist,
-			KrGroup:  tag.KrGroup,
-			KrSong:   tag.KrSong,
-		}
-		suggestedTags = append(suggestedTags, mappedTag)
+	suggestedTags := &pb.SuggestedTags{
+		EnArtist: result.SuggestedTags.EnArtist,
+		EnGroup:  result.SuggestedTags.EnGroup,
+		EnSong:   result.SuggestedTags.EnSong,
+		KrArtist: result.SuggestedTags.KrArtist,
+		KrGroup:  result.SuggestedTags.KrGroup,
+		KrSong:   result.SuggestedTags.KrSong,
 	}
 
 	return &pb.FancamObject{
@@ -128,17 +124,14 @@ func (s *FancamServer) GetFancams(ctx context.Context, input *pb.GetFancamsReque
 	}
 
 	for _, result := range results {
-		var suggestedTags []*pb.SuggestedTags
-		for _, tag := range result.SuggestedTags {
-			mappedTag := &pb.SuggestedTags{
-				EnArtist: tag.EnArtist,
-				EnGroup:  tag.EnGroup,
-				EnSong:   tag.EnSong,
-				KrArtist: tag.KrArtist,
-				KrGroup:  tag.KrGroup,
-				KrSong:   tag.KrSong,
-			}
-			suggestedTags = append(suggestedTags, mappedTag)
+		// Convert suggestedTags into grpc model
+		suggestedTags := &pb.SuggestedTags{
+			EnArtist: result.SuggestedTags.EnArtist,
+			EnGroup:  result.SuggestedTags.EnGroup,
+			EnSong:   result.SuggestedTags.EnSong,
+			KrArtist: result.SuggestedTags.KrArtist,
+			KrGroup:  result.SuggestedTags.KrGroup,
+			KrSong:   result.SuggestedTags.KrSong,
 		}
 
 		var artists []*pb.ArtistObject
@@ -215,17 +208,14 @@ func (s *FancamServer) GetLatest(ctx context.Context, input *pb.LatestRequest) (
 		Fancams: []*pb.FancamObject{},
 	}
 	for _, result := range results {
-		var suggestedTags []*pb.SuggestedTags
-		for _, tag := range result.SuggestedTags {
-			mappedTag := &pb.SuggestedTags{
-				EnArtist: tag.EnArtist,
-				EnGroup:  tag.EnGroup,
-				EnSong:   tag.EnSong,
-				KrArtist: tag.KrArtist,
-				KrGroup:  tag.KrGroup,
-				KrSong:   tag.KrSong,
-			}
-			suggestedTags = append(suggestedTags, mappedTag)
+		// Convert suggestedTags into grpc model
+		suggestedTags := &pb.SuggestedTags{
+			EnArtist: result.SuggestedTags.EnArtist,
+			EnGroup:  result.SuggestedTags.EnGroup,
+			EnSong:   result.SuggestedTags.EnSong,
+			KrArtist: result.SuggestedTags.KrArtist,
+			KrGroup:  result.SuggestedTags.KrGroup,
+			KrSong:   result.SuggestedTags.KrSong,
 		}
 
 		var artists []*pb.ArtistObject
@@ -294,18 +284,13 @@ func (s *FancamServer) CreateFancams(ctx context.Context, input *pb.FancamList) 
 		}
 
 		// Map suggested tags
-		var mappedTags []model.SuggestedTags
-		inputTags := fancam.GetSuggestedTags()
-		for _, tag := range inputTags {
-			mappedTag := model.SuggestedTags{
-				EnArtist: tag.GetEnArtist(),
-				EnGroup:  tag.GetEnGroup(),
-				EnSong:   tag.GetEnSong(),
-				KrArtist: tag.GetKrArtist(),
-				KrGroup:  tag.GetKrGroup(),
-				KrSong:   tag.GetKrSong(),
-			}
-			mappedTags = append(mappedTags, mappedTag)
+		mappedTag := model.SuggestedTags{
+			EnArtist: fancam.SuggestedTags.EnArtist,
+			EnGroup:  fancam.SuggestedTags.EnGroup,
+			EnSong:   fancam.SuggestedTags.EnSong,
+			KrArtist: fancam.SuggestedTags.KrArtist,
+			KrGroup:  fancam.SuggestedTags.KrGroup,
+			KrSong:   fancam.SuggestedTags.KrSong,
 		}
 
 		mappedFancam := model.Fancam{
@@ -318,7 +303,7 @@ func (s *FancamServer) CreateFancams(ctx context.Context, input *pb.FancamList) 
 			RootThumbnail: fancam.GetRootThumbnail(),
 			RecordDate:    fancam.RecordDate.AsTime(),
 			Artists:       mappedArtists,
-			SuggestedTags: mappedTags,
+			SuggestedTags: mappedTag,
 		}
 		fancams = append(fancams, mappedFancam)
 	}
