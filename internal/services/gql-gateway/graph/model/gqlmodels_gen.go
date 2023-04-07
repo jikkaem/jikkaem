@@ -26,10 +26,24 @@ type Artist struct {
 }
 
 type Fancam struct {
-	ID      string    `json:"id"`
-	Title   string    `json:"title"`
-	YtLink  string    `json:"ytLink"`
-	Artists []*Artist `json:"artists"`
+	ID            string         `json:"id"`
+	Title         string         `json:"title"`
+	Description   string         `json:"description"`
+	PublishedAt   time.Time      `json:"publishedAt"`
+	ChannelID     string         `json:"channelID"`
+	ChannelTitle  string         `json:"channelTitle"`
+	RootThumbnail string         `json:"rootThumbnail"`
+	RecordDate    *time.Time     `json:"recordDate,omitempty"`
+	SuggestedTags *SuggestedTags `json:"suggestedTags"`
+	Artists       []*Artist      `json:"artists"`
+}
+
+type LatestFancamsInput struct {
+	MaxResults int `json:"maxResults"`
+}
+
+type ListIDs struct {
+	Ids []string `json:"ids"`
 }
 
 type NewUser struct {
@@ -39,6 +53,15 @@ type NewUser struct {
 
 type SingleID struct {
 	ID string `json:"id"`
+}
+
+type SuggestedTags struct {
+	EnArtist []string `json:"enArtist"`
+	EnGroup  []string `json:"enGroup"`
+	EnSong   []string `json:"enSong"`
+	KrArtist []string `json:"krArtist"`
+	KrGroup  []string `json:"krGroup"`
+	KrSong   []string `json:"krSong"`
 }
 
 type User struct {

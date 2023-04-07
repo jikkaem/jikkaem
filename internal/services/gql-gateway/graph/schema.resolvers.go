@@ -77,8 +77,18 @@ func (r *mutationResolver) DeleteUser(ctx context.Context, input gqlmodel.Single
 }
 
 // Fancam is the resolver for the fancam field.
-func (r *queryResolver) Fancam(ctx context.Context) ([]*gqlmodel.Fancam, error) {
+func (r *queryResolver) Fancam(ctx context.Context, input gqlmodel.SingleID) (*gqlmodel.Fancam, error) {
 	panic(fmt.Errorf("not implemented: Fancam - fancam"))
+}
+
+// Fancams is the resolver for the fancams field.
+func (r *queryResolver) Fancams(ctx context.Context, input gqlmodel.ListIDs) ([]*gqlmodel.Fancam, error) {
+	panic(fmt.Errorf("not implemented: Fancams - fancams"))
+}
+
+// LatestFancams is the resolver for the latestFancams field.
+func (r *queryResolver) LatestFancams(ctx context.Context, input gqlmodel.LatestFancamsInput) ([]*gqlmodel.Fancam, error) {
+	panic(fmt.Errorf("not implemented: LatestFancams - latestFancams"))
 }
 
 // Artist is the resolver for the artist field.

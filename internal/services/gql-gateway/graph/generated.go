@@ -63,10 +63,16 @@ type ComplexityRoot struct {
 	}
 
 	Fancam struct {
-		Artists func(childComplexity int) int
-		ID      func(childComplexity int) int
-		Title   func(childComplexity int) int
-		YtLink  func(childComplexity int) int
+		Artists       func(childComplexity int) int
+		ChannelID     func(childComplexity int) int
+		ChannelTitle  func(childComplexity int) int
+		Description   func(childComplexity int) int
+		ID            func(childComplexity int) int
+		PublishedAt   func(childComplexity int) int
+		RecordDate    func(childComplexity int) int
+		RootThumbnail func(childComplexity int) int
+		SuggestedTags func(childComplexity int) int
+		Title         func(childComplexity int) int
 	}
 
 	Mutation struct {
@@ -75,9 +81,20 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Artist func(childComplexity int) int
-		Fancam func(childComplexity int) int
-		User   func(childComplexity int, input gqlmodel.SingleID) int
+		Artist        func(childComplexity int) int
+		Fancam        func(childComplexity int, input gqlmodel.SingleID) int
+		Fancams       func(childComplexity int, input gqlmodel.ListIDs) int
+		LatestFancams func(childComplexity int, input gqlmodel.LatestFancamsInput) int
+		User          func(childComplexity int, input gqlmodel.SingleID) int
+	}
+
+	SuggestedTags struct {
+		EnArtist func(childComplexity int) int
+		EnGroup  func(childComplexity int) int
+		EnSong   func(childComplexity int) int
+		KrArtist func(childComplexity int) int
+		KrGroup  func(childComplexity int) int
+		KrSong   func(childComplexity int) int
 	}
 
 	User struct {
@@ -92,7 +109,9 @@ type MutationResolver interface {
 	DeleteUser(ctx context.Context, input gqlmodel.SingleID) (*gqlmodel.User, error)
 }
 type QueryResolver interface {
-	Fancam(ctx context.Context) ([]*gqlmodel.Fancam, error)
+	Fancam(ctx context.Context, input gqlmodel.SingleID) (*gqlmodel.Fancam, error)
+	Fancams(ctx context.Context, input gqlmodel.ListIDs) ([]*gqlmodel.Fancam, error)
+	LatestFancams(ctx context.Context, input gqlmodel.LatestFancamsInput) ([]*gqlmodel.Fancam, error)
 	Artist(ctx context.Context) ([]*gqlmodel.Artist, error)
 	User(ctx context.Context, input gqlmodel.SingleID) (*gqlmodel.User, error)
 }
@@ -210,6 +229,27 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Fancam.Artists(childComplexity), true
 
+	case "Fancam.channelID":
+		if e.complexity.Fancam.ChannelID == nil {
+			break
+		}
+
+		return e.complexity.Fancam.ChannelID(childComplexity), true
+
+	case "Fancam.channelTitle":
+		if e.complexity.Fancam.ChannelTitle == nil {
+			break
+		}
+
+		return e.complexity.Fancam.ChannelTitle(childComplexity), true
+
+	case "Fancam.description":
+		if e.complexity.Fancam.Description == nil {
+			break
+		}
+
+		return e.complexity.Fancam.Description(childComplexity), true
+
 	case "Fancam.id":
 		if e.complexity.Fancam.ID == nil {
 			break
@@ -217,19 +257,40 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Fancam.ID(childComplexity), true
 
+	case "Fancam.publishedAt":
+		if e.complexity.Fancam.PublishedAt == nil {
+			break
+		}
+
+		return e.complexity.Fancam.PublishedAt(childComplexity), true
+
+	case "Fancam.recordDate":
+		if e.complexity.Fancam.RecordDate == nil {
+			break
+		}
+
+		return e.complexity.Fancam.RecordDate(childComplexity), true
+
+	case "Fancam.rootThumbnail":
+		if e.complexity.Fancam.RootThumbnail == nil {
+			break
+		}
+
+		return e.complexity.Fancam.RootThumbnail(childComplexity), true
+
+	case "Fancam.suggestedTags":
+		if e.complexity.Fancam.SuggestedTags == nil {
+			break
+		}
+
+		return e.complexity.Fancam.SuggestedTags(childComplexity), true
+
 	case "Fancam.title":
 		if e.complexity.Fancam.Title == nil {
 			break
 		}
 
 		return e.complexity.Fancam.Title(childComplexity), true
-
-	case "Fancam.ytLink":
-		if e.complexity.Fancam.YtLink == nil {
-			break
-		}
-
-		return e.complexity.Fancam.YtLink(childComplexity), true
 
 	case "Mutation.createUser":
 		if e.complexity.Mutation.CreateUser == nil {
@@ -267,7 +328,36 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		return e.complexity.Query.Fancam(childComplexity), true
+		args, err := ec.field_Query_fancam_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Fancam(childComplexity, args["input"].(gqlmodel.SingleID)), true
+
+	case "Query.fancams":
+		if e.complexity.Query.Fancams == nil {
+			break
+		}
+
+		args, err := ec.field_Query_fancams_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Fancams(childComplexity, args["input"].(gqlmodel.ListIDs)), true
+
+	case "Query.latestFancams":
+		if e.complexity.Query.LatestFancams == nil {
+			break
+		}
+
+		args, err := ec.field_Query_latestFancams_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.LatestFancams(childComplexity, args["input"].(gqlmodel.LatestFancamsInput)), true
 
 	case "Query.user":
 		if e.complexity.Query.User == nil {
@@ -280,6 +370,48 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.User(childComplexity, args["input"].(gqlmodel.SingleID)), true
+
+	case "SuggestedTags.enArtist":
+		if e.complexity.SuggestedTags.EnArtist == nil {
+			break
+		}
+
+		return e.complexity.SuggestedTags.EnArtist(childComplexity), true
+
+	case "SuggestedTags.enGroup":
+		if e.complexity.SuggestedTags.EnGroup == nil {
+			break
+		}
+
+		return e.complexity.SuggestedTags.EnGroup(childComplexity), true
+
+	case "SuggestedTags.enSong":
+		if e.complexity.SuggestedTags.EnSong == nil {
+			break
+		}
+
+		return e.complexity.SuggestedTags.EnSong(childComplexity), true
+
+	case "SuggestedTags.krArtist":
+		if e.complexity.SuggestedTags.KrArtist == nil {
+			break
+		}
+
+		return e.complexity.SuggestedTags.KrArtist(childComplexity), true
+
+	case "SuggestedTags.krGroup":
+		if e.complexity.SuggestedTags.KrGroup == nil {
+			break
+		}
+
+		return e.complexity.SuggestedTags.KrGroup(childComplexity), true
+
+	case "SuggestedTags.krSong":
+		if e.complexity.SuggestedTags.KrSong == nil {
+			break
+		}
+
+		return e.complexity.SuggestedTags.KrSong(childComplexity), true
 
 	case "User.email":
 		if e.complexity.User.Email == nil {
@@ -310,6 +442,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	rc := graphql.GetOperationContext(ctx)
 	ec := executionContext{rc, e}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
+		ec.unmarshalInputLatestFancamsInput,
+		ec.unmarshalInputListIDs,
 		ec.unmarshalInputNewUser,
 		ec.unmarshalInputSingleID,
 	)
@@ -433,6 +567,51 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 		}
 	}
 	args["name"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_fancam_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gqlmodel.SingleID
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNSingleID2jikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐSingleID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_fancams_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gqlmodel.ListIDs
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNListIDs2jikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐListIDs(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_latestFancams_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gqlmodel.LatestFancamsInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNLatestFancamsInput2jikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐLatestFancamsInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
 	return args, nil
 }
 
@@ -1134,8 +1313,8 @@ func (ec *executionContext) fieldContext_Fancam_title(ctx context.Context, field
 	return fc, nil
 }
 
-func (ec *executionContext) _Fancam_ytLink(ctx context.Context, field graphql.CollectedField, obj *gqlmodel.Fancam) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Fancam_ytLink(ctx, field)
+func (ec *executionContext) _Fancam_description(ctx context.Context, field graphql.CollectedField, obj *gqlmodel.Fancam) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Fancam_description(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -1148,7 +1327,7 @@ func (ec *executionContext) _Fancam_ytLink(ctx context.Context, field graphql.Co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.YtLink, nil
+		return obj.Description, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1165,7 +1344,7 @@ func (ec *executionContext) _Fancam_ytLink(ctx context.Context, field graphql.Co
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Fancam_ytLink(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Fancam_description(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Fancam",
 		Field:      field,
@@ -1173,6 +1352,281 @@ func (ec *executionContext) fieldContext_Fancam_ytLink(ctx context.Context, fiel
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Fancam_publishedAt(ctx context.Context, field graphql.CollectedField, obj *gqlmodel.Fancam) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Fancam_publishedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PublishedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Fancam_publishedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Fancam",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Fancam_channelID(ctx context.Context, field graphql.CollectedField, obj *gqlmodel.Fancam) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Fancam_channelID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ChannelID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Fancam_channelID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Fancam",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Fancam_channelTitle(ctx context.Context, field graphql.CollectedField, obj *gqlmodel.Fancam) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Fancam_channelTitle(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ChannelTitle, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Fancam_channelTitle(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Fancam",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Fancam_rootThumbnail(ctx context.Context, field graphql.CollectedField, obj *gqlmodel.Fancam) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Fancam_rootThumbnail(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RootThumbnail, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Fancam_rootThumbnail(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Fancam",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Fancam_recordDate(ctx context.Context, field graphql.CollectedField, obj *gqlmodel.Fancam) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Fancam_recordDate(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RecordDate, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	fc.Result = res
+	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Fancam_recordDate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Fancam",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Fancam_suggestedTags(ctx context.Context, field graphql.CollectedField, obj *gqlmodel.Fancam) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Fancam_suggestedTags(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SuggestedTags, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*gqlmodel.SuggestedTags)
+	fc.Result = res
+	return ec.marshalNSuggestedTags2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐSuggestedTags(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Fancam_suggestedTags(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Fancam",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "enArtist":
+				return ec.fieldContext_SuggestedTags_enArtist(ctx, field)
+			case "enGroup":
+				return ec.fieldContext_SuggestedTags_enGroup(ctx, field)
+			case "enSong":
+				return ec.fieldContext_SuggestedTags_enSong(ctx, field)
+			case "krArtist":
+				return ec.fieldContext_SuggestedTags_krArtist(ctx, field)
+			case "krGroup":
+				return ec.fieldContext_SuggestedTags_krGroup(ctx, field)
+			case "krSong":
+				return ec.fieldContext_SuggestedTags_krSong(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type SuggestedTags", field.Name)
 		},
 	}
 	return fc, nil
@@ -1206,7 +1660,7 @@ func (ec *executionContext) _Fancam_artists(ctx context.Context, field graphql.C
 	}
 	res := resTmp.([]*gqlmodel.Artist)
 	fc.Result = res
-	return ec.marshalNArtist2ᚕᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐArtistᚄ(ctx, field.Selections, res)
+	return ec.marshalNArtist2ᚕᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐArtist(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Fancam_artists(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1390,7 +1844,81 @@ func (ec *executionContext) _Query_fancam(ctx context.Context, field graphql.Col
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Fancam(rctx)
+		return ec.resolvers.Query().Fancam(rctx, fc.Args["input"].(gqlmodel.SingleID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*gqlmodel.Fancam)
+	fc.Result = res
+	return ec.marshalOFancam2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐFancam(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_fancam(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Fancam_id(ctx, field)
+			case "title":
+				return ec.fieldContext_Fancam_title(ctx, field)
+			case "description":
+				return ec.fieldContext_Fancam_description(ctx, field)
+			case "publishedAt":
+				return ec.fieldContext_Fancam_publishedAt(ctx, field)
+			case "channelID":
+				return ec.fieldContext_Fancam_channelID(ctx, field)
+			case "channelTitle":
+				return ec.fieldContext_Fancam_channelTitle(ctx, field)
+			case "rootThumbnail":
+				return ec.fieldContext_Fancam_rootThumbnail(ctx, field)
+			case "recordDate":
+				return ec.fieldContext_Fancam_recordDate(ctx, field)
+			case "suggestedTags":
+				return ec.fieldContext_Fancam_suggestedTags(ctx, field)
+			case "artists":
+				return ec.fieldContext_Fancam_artists(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Fancam", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_fancam_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_fancams(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_fancams(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Fancams(rctx, fc.Args["input"].(gqlmodel.ListIDs))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1407,7 +1935,7 @@ func (ec *executionContext) _Query_fancam(ctx context.Context, field graphql.Col
 	return ec.marshalNFancam2ᚕᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐFancam(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_fancam(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_fancams(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -1419,13 +1947,113 @@ func (ec *executionContext) fieldContext_Query_fancam(ctx context.Context, field
 				return ec.fieldContext_Fancam_id(ctx, field)
 			case "title":
 				return ec.fieldContext_Fancam_title(ctx, field)
-			case "ytLink":
-				return ec.fieldContext_Fancam_ytLink(ctx, field)
+			case "description":
+				return ec.fieldContext_Fancam_description(ctx, field)
+			case "publishedAt":
+				return ec.fieldContext_Fancam_publishedAt(ctx, field)
+			case "channelID":
+				return ec.fieldContext_Fancam_channelID(ctx, field)
+			case "channelTitle":
+				return ec.fieldContext_Fancam_channelTitle(ctx, field)
+			case "rootThumbnail":
+				return ec.fieldContext_Fancam_rootThumbnail(ctx, field)
+			case "recordDate":
+				return ec.fieldContext_Fancam_recordDate(ctx, field)
+			case "suggestedTags":
+				return ec.fieldContext_Fancam_suggestedTags(ctx, field)
 			case "artists":
 				return ec.fieldContext_Fancam_artists(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Fancam", field.Name)
 		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_fancams_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_latestFancams(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_latestFancams(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().LatestFancams(rctx, fc.Args["input"].(gqlmodel.LatestFancamsInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*gqlmodel.Fancam)
+	fc.Result = res
+	return ec.marshalNFancam2ᚕᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐFancamᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_latestFancams(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Fancam_id(ctx, field)
+			case "title":
+				return ec.fieldContext_Fancam_title(ctx, field)
+			case "description":
+				return ec.fieldContext_Fancam_description(ctx, field)
+			case "publishedAt":
+				return ec.fieldContext_Fancam_publishedAt(ctx, field)
+			case "channelID":
+				return ec.fieldContext_Fancam_channelID(ctx, field)
+			case "channelTitle":
+				return ec.fieldContext_Fancam_channelTitle(ctx, field)
+			case "rootThumbnail":
+				return ec.fieldContext_Fancam_rootThumbnail(ctx, field)
+			case "recordDate":
+				return ec.fieldContext_Fancam_recordDate(ctx, field)
+			case "suggestedTags":
+				return ec.fieldContext_Fancam_suggestedTags(ctx, field)
+			case "artists":
+				return ec.fieldContext_Fancam_artists(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Fancam", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_latestFancams_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
 	}
 	return fc, nil
 }
@@ -1686,6 +2314,270 @@ func (ec *executionContext) fieldContext_Query___schema(ctx context.Context, fie
 				return ec.fieldContext___Schema_directives(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Schema", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SuggestedTags_enArtist(ctx context.Context, field graphql.CollectedField, obj *gqlmodel.SuggestedTags) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SuggestedTags_enArtist(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.EnArtist, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	fc.Result = res
+	return ec.marshalNString2ᚕstringᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SuggestedTags_enArtist(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SuggestedTags",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SuggestedTags_enGroup(ctx context.Context, field graphql.CollectedField, obj *gqlmodel.SuggestedTags) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SuggestedTags_enGroup(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.EnGroup, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	fc.Result = res
+	return ec.marshalNString2ᚕstringᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SuggestedTags_enGroup(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SuggestedTags",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SuggestedTags_enSong(ctx context.Context, field graphql.CollectedField, obj *gqlmodel.SuggestedTags) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SuggestedTags_enSong(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.EnSong, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	fc.Result = res
+	return ec.marshalNString2ᚕstringᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SuggestedTags_enSong(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SuggestedTags",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SuggestedTags_krArtist(ctx context.Context, field graphql.CollectedField, obj *gqlmodel.SuggestedTags) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SuggestedTags_krArtist(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.KrArtist, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	fc.Result = res
+	return ec.marshalNString2ᚕstringᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SuggestedTags_krArtist(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SuggestedTags",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SuggestedTags_krGroup(ctx context.Context, field graphql.CollectedField, obj *gqlmodel.SuggestedTags) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SuggestedTags_krGroup(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.KrGroup, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	fc.Result = res
+	return ec.marshalNString2ᚕstringᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SuggestedTags_krGroup(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SuggestedTags",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SuggestedTags_krSong(ctx context.Context, field graphql.CollectedField, obj *gqlmodel.SuggestedTags) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SuggestedTags_krSong(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.KrSong, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	fc.Result = res
+	return ec.marshalNString2ᚕstringᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SuggestedTags_krSong(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SuggestedTags",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -3596,6 +4488,62 @@ func (ec *executionContext) fieldContext___Type_specifiedByURL(ctx context.Conte
 
 // region    **************************** input.gotpl *****************************
 
+func (ec *executionContext) unmarshalInputLatestFancamsInput(ctx context.Context, obj interface{}) (gqlmodel.LatestFancamsInput, error) {
+	var it gqlmodel.LatestFancamsInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"maxResults"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "maxResults":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxResults"))
+			it.MaxResults, err = ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputListIDs(ctx context.Context, obj interface{}) (gqlmodel.ListIDs, error) {
+	var it gqlmodel.ListIDs
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"ids"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "ids":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ids"))
+			it.Ids, err = ec.unmarshalNID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputNewUser(ctx context.Context, obj interface{}) (gqlmodel.NewUser, error) {
 	var it gqlmodel.NewUser
 	asMap := map[string]interface{}{}
@@ -3789,9 +4737,48 @@ func (ec *executionContext) _Fancam(ctx context.Context, sel ast.SelectionSet, o
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "ytLink":
+		case "description":
 
-			out.Values[i] = ec._Fancam_ytLink(ctx, field, obj)
+			out.Values[i] = ec._Fancam_description(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "publishedAt":
+
+			out.Values[i] = ec._Fancam_publishedAt(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "channelID":
+
+			out.Values[i] = ec._Fancam_channelID(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "channelTitle":
+
+			out.Values[i] = ec._Fancam_channelTitle(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "rootThumbnail":
+
+			out.Values[i] = ec._Fancam_rootThumbnail(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "recordDate":
+
+			out.Values[i] = ec._Fancam_recordDate(ctx, field, obj)
+
+		case "suggestedTags":
+
+			out.Values[i] = ec._Fancam_suggestedTags(ctx, field, obj)
 
 			if out.Values[i] == graphql.Null {
 				invalids++
@@ -3891,6 +4878,49 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_fancam(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "fancams":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_fancams(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "latestFancams":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_latestFancams(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -3959,6 +4989,69 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				return ec._Query___schema(ctx, field)
 			})
 
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var suggestedTagsImplementors = []string{"SuggestedTags"}
+
+func (ec *executionContext) _SuggestedTags(ctx context.Context, sel ast.SelectionSet, obj *gqlmodel.SuggestedTags) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, suggestedTagsImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("SuggestedTags")
+		case "enArtist":
+
+			out.Values[i] = ec._SuggestedTags_enArtist(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "enGroup":
+
+			out.Values[i] = ec._SuggestedTags_enGroup(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "enSong":
+
+			out.Values[i] = ec._SuggestedTags_enSong(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "krArtist":
+
+			out.Values[i] = ec._SuggestedTags_krArtist(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "krGroup":
+
+			out.Values[i] = ec._SuggestedTags_krGroup(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "krSong":
+
+			out.Values[i] = ec._SuggestedTags_krSong(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -4368,60 +5461,6 @@ func (ec *executionContext) marshalNArtist2ᚕᚖjikkaemᚋinternalᚋservices�
 	return ret
 }
 
-func (ec *executionContext) marshalNArtist2ᚕᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐArtistᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.Artist) graphql.Marshaler {
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalNArtist2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐArtist(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
-}
-
-func (ec *executionContext) marshalNArtist2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐArtist(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.Artist) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._Artist(ctx, sel, v)
-}
-
 func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
 	res, err := graphql.UnmarshalBoolean(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -4475,6 +5514,60 @@ func (ec *executionContext) marshalNFancam2ᚕᚖjikkaemᚋinternalᚋservices�
 	return ret
 }
 
+func (ec *executionContext) marshalNFancam2ᚕᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐFancamᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.Fancam) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNFancam2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐFancam(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNFancam2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐFancam(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.Fancam) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Fancam(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalNGender2jikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐGender(ctx context.Context, v interface{}) (gqlmodel.Gender, error) {
 	var res gqlmodel.Gender
 	err := res.UnmarshalGQL(v)
@@ -4500,6 +5593,63 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
+func (ec *executionContext) unmarshalNID2ᚕstringᚄ(ctx context.Context, v interface{}) ([]string, error) {
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]string, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNID2string(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalNID2ᚕstringᚄ(ctx context.Context, sel ast.SelectionSet, v []string) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalNID2string(ctx, sel, v[i])
+	}
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {
+	res, err := graphql.UnmarshalInt(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
+	res := graphql.MarshalInt(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) unmarshalNLatestFancamsInput2jikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐLatestFancamsInput(ctx context.Context, v interface{}) (gqlmodel.LatestFancamsInput, error) {
+	res, err := ec.unmarshalInputLatestFancamsInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNListIDs2jikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐListIDs(ctx context.Context, v interface{}) (gqlmodel.ListIDs, error) {
+	res, err := ec.unmarshalInputListIDs(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNNewUser2jikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐNewUser(ctx context.Context, v interface{}) (gqlmodel.NewUser, error) {
 	res, err := ec.unmarshalInputNewUser(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -4517,6 +5667,63 @@ func (ec *executionContext) unmarshalNString2string(ctx context.Context, v inter
 
 func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
 	res := graphql.MarshalString(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) unmarshalNString2ᚕstringᚄ(ctx context.Context, v interface{}) ([]string, error) {
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]string, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNString2string(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalNString2ᚕstringᚄ(ctx context.Context, sel ast.SelectionSet, v []string) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalNString2string(ctx, sel, v[i])
+	}
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNSuggestedTags2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐSuggestedTags(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.SuggestedTags) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._SuggestedTags(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNTime2timeᚐTime(ctx context.Context, v interface{}) (time.Time, error) {
+	res, err := graphql.UnmarshalTime(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel ast.SelectionSet, v time.Time) graphql.Marshaler {
+	res := graphql.MarshalTime(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")

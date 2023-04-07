@@ -1,5 +1,18 @@
 # https://gqlgen.com/getting-started/
 
+type Query {
+  fancam(input: SingleID!): Fancam
+  fancams(input: ListIDs!): [Fancam]!
+  latestFancams(input: LatestFancamsInput!): [Fancam!]!
+  artist: [Artist]!
+  user(input: SingleID!): User
+}
+
+type Mutation {
+  createUser(input: NewUser!): User!
+  deleteUser(input: SingleID!): User!
+}
+
 scalar Time
 
 enum Gender {
@@ -16,8 +29,23 @@ type User {
 type Fancam {
   id: ID!
   title: String!
-  ytLink: String!
-  artists: [Artist!]!
+  description: String!
+  publishedAt: Time!
+  channelID: ID!
+  channelTitle: String!
+  rootThumbnail: String!
+  recordDate: Time
+  suggestedTags: SuggestedTags!
+  artists: [Artist]!
+}
+
+type SuggestedTags {
+  enArtist: [String!]!
+  enGroup: [String!]!
+  enSong: [String!]!
+  krArtist: [String!]!
+  krGroup: [String!]!
+  krSong: [String!]!
 }
 
 type Artist {
@@ -36,14 +64,12 @@ type Artist {
   instagram: String # link to their profile? username?
 }
 
-type Query {
-  fancam: [Fancam]!
-  artist: [Artist]!
-  user(input: SingleID!): User
-}
-
 input SingleID {
   id: ID!
+}
+
+input ListIDs {
+  ids: [ID!]!
 }
 
 input NewUser {
@@ -51,7 +77,6 @@ input NewUser {
   email: String!
 }
 
-type Mutation {
-  createUser(input: NewUser!): User!
-  deleteUser(input: SingleID!): User!
+input LatestFancamsInput {
+  maxResults: Int!
 }
