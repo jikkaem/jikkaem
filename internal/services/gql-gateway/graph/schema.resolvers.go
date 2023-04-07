@@ -7,7 +7,8 @@ package graph
 import (
 	"context"
 	"fmt"
-	pb "jikkaem/internal/proto/user"
+	pbfc "jikkaem/internal/proto/fancam"
+	pbuser "jikkaem/internal/proto/user"
 	gqlmodel "jikkaem/internal/services/gql-gateway/graph/model"
 	"log"
 	"time"
@@ -23,12 +24,12 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input gqlmodel.NewUse
 		log.Fatalf("did not connect: %v", err)
 	}
 	defer conn.Close()
-	c := pb.NewUserClient(conn)
+	c := pbuser.NewUserClient(conn)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	userObject := &pb.UserObject{
+	userObject := &pbuser.UserObject{
 		Name:  input.Name,
 		Email: input.Email,
 	}
@@ -54,12 +55,12 @@ func (r *mutationResolver) DeleteUser(ctx context.Context, input gqlmodel.Single
 		log.Fatalf("did not connect: %v", err)
 	}
 	defer conn.Close()
-	c := pb.NewUserClient(conn)
+	c := pbuser.NewUserClient(conn)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	in := &pb.ID{
+	in := &pbuser.ID{
 		Id: input.ID,
 	}
 
@@ -78,7 +79,86 @@ func (r *mutationResolver) DeleteUser(ctx context.Context, input gqlmodel.Single
 
 // Fancam is the resolver for the fancam field.
 func (r *queryResolver) Fancam(ctx context.Context, input gqlmodel.SingleID) (*gqlmodel.Fancam, error) {
-	panic(fmt.Errorf("not implemented: Fancam - fancam"))
+	conn, err := grpc.Dial("localhost:6001", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer conn.Close()
+	c := pbfc.NewFancamClient(conn)
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	in := &pbfc.ID{
+		Id: input.ID,
+	}
+
+	res, err := c.GetFancamByID(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+
+	// Return gql model
+	// Get pointer to RecordDate
+	recordDate := res.GetRecordDate().AsTime()
+	ptrRecordDate := &recordDate
+
+	// Format SuggestedTags
+	suggestedTags := &gqlmodel.SuggestedTags{
+		EnArtist: res.SuggestedTags.GetEnArtist(),
+		EnGroup:  res.SuggestedTags.GetEnGroup(),
+		EnSong:   res.SuggestedTags.GetEnSong(),
+		KrArtist: res.SuggestedTags.GetKrArtist(),
+		KrGroup:  res.SuggestedTags.GetKrGroup(),
+		KrSong:   res.SuggestedTags.GetKrSong(),
+	}
+
+	// Format Artists
+	var artists []*gqlmodel.Artist
+	for _, artist := range res.GetArtists() {
+		// Get ptr to dob
+		dob := artist.GetDob().AsTime()
+		ptrDob := &dob
+		// Get ptr to height, weight and ig
+		intHeight := int(artist.GetHeight())
+		ptrHeight := &intHeight
+		intWeight := float64(artist.GetWeight())
+		ptrWeight := &intWeight
+		ig := artist.GetInstagram()
+		ptrIg := &ig
+		obj := &gqlmodel.Artist{
+			ID:              artist.GetId(),
+			StageName:       artist.GetStageName(),
+			FullName:        artist.GetFullName(),
+			KoreanName:      artist.GetKoreanName(),
+			KoreanStageName: artist.GetKoreanName(),
+			Dob:             ptrDob,
+			Group:           &artist.Group,
+			Country:         artist.GetCountry(),
+			Height:          ptrHeight,
+			Weight:          ptrWeight,
+			Birthplace:      artist.GetBirthplace(),
+			Gender:          gqlmodel.Gender(artist.GetGender().String()),
+			Instagram:       ptrIg,
+		}
+
+		artists = append(artists, obj)
+	}
+
+	gqlFancam := &gqlmodel.Fancam{
+		ID:            res.GetId(),
+		Title:         res.GetTitle(),
+		Description:   res.GetDescription(),
+		PublishedAt:   res.GetPublishedAt().AsTime(),
+		ChannelID:     res.GetChannelId(),
+		ChannelTitle:  res.GetChannelTitle(),
+		RootThumbnail: res.GetRootThumbnail(),
+		RecordDate:    ptrRecordDate,
+		SuggestedTags: suggestedTags,
+		Artists:       artists,
+	}
+
+	return gqlFancam, nil
 }
 
 // Fancams is the resolver for the fancams field.
@@ -103,12 +183,12 @@ func (r *queryResolver) User(ctx context.Context, input gqlmodel.SingleID) (*gql
 		log.Fatalf("did not connect: %v", err)
 	}
 	defer conn.Close()
-	c := pb.NewUserClient(conn)
+	c := pbuser.NewUserClient(conn)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	in := &pb.ID{
+	in := &pbuser.ID{
 		Id: input.ID,
 	}
 
