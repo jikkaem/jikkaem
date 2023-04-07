@@ -25,10 +25,14 @@ message FancamList {
 message FancamObject {
   string id = 1;
   string title = 2;
-  string yt_link = 3;
-  google.protobuf.Timestamp record_date = 4;
-  repeated ArtistObject artists = 5;
-  repeated SuggestedTags suggested_tags = 6; 
+  string description = 3;
+  google.protobuf.Timestamp publishedAt = 4;
+  string channelId = 5;
+  string channelTitle = 6;
+  string rootThumbnail = 7;
+  google.protobuf.Timestamp record_date = 8;
+  repeated ArtistObject artists = 9;
+  repeated SuggestedTags suggested_tags = 10; 
 }
 
 message GetFancamsRequest {
