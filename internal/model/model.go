@@ -31,7 +31,11 @@ type Artist struct {
 type Fancam struct {
 	ID            primitive.ObjectID `bson:"_id"`
 	Title         string             `bson:"title"`
-	YtLink        string             `bson:"ytLink"`
+	Description   string             `bson:"description"`
+	PublishedAt   time.Time          `bson:"publishedAt"`
+	ChannelID     string             `bson:"channelId"`
+	ChannelTitle  string             `bson:"channelTitle"`
+	RootThumbnail string             `bson:"rootThumbnail"`
 	RecordDate    time.Time          `bson:"recordDate,omitempty"`
 	Artists       []Artist           `bson:"artists"`
 	SuggestedTags []SuggestedTags    `bson:"suggestedTags,omitempty"`
