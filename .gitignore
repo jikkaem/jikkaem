@@ -18,5 +18,7 @@ tmp
 internal/services/scraper/env
 .DS_Store
 
+__pycache__
+
 # Dependency directories (remove the comment below to include it)
 # vendor/
