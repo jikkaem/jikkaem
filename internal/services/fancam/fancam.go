@@ -5,6 +5,7 @@ import (
 	"jikkaem/internal/model"
 	"jikkaem/internal/mongodb"
 	pb "jikkaem/internal/proto/fancam"
+	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -25,41 +26,20 @@ type FancamServer struct {
 	pb.UnimplementedFancamServer
 }
 
-func (s *FancamServer) GetFancamByID(ctx context.Context, id *pb.ID) (*pb.FancamObject, error) {
+func (s *FancamServer) GetFancam(ctx context.Context, input *pb.GetFancamRequest) (*pb.FancamObject, error) {
 	coll, err := s.getColl("fancams")
 	if err != nil {
 		return nil, err
 	}
 
 	var result model.Fancam
-	hex, err := primitive.ObjectIDFromHex(id.Id)
+	hex, err := primitive.ObjectIDFromHex(input.Id)
 	if err != nil {
 		return nil, err
 	}
 	filter := bson.D{{Key: "_id", Value: hex}}
 	if err = coll.FindOne(context.TODO(), filter).Decode(&result); err != nil {
 		return nil, err
-	}
-
-	// Convert artists list into grpc model
-	var artists []*pb.ArtistObject
-	for _, artist := range result.Artists {
-		mappedArtist := &pb.ArtistObject{
-			Id:              artist.ID.Hex(),
-			StageName:       artist.StageName,
-			FullName:        artist.FullName,
-			KoreanName:      artist.KoreanName,
-			KoreanStageName: artist.KoreanStageName,
-			Dob:             timestamppb.New(artist.DOB),
-			Group:           artist.Group,
-			Country:         artist.Country,
-			Height:          int32(artist.Height),
-			Weight:          int32(artist.Weight),
-			Birthplace:      artist.Birthplace,
-			Gender:          pb.Gender(pb.Gender_value[artist.Gender]),
-			Instagram:       artist.Instagram,
-		}
-		artists = append(artists, mappedArtist)
 	}
 
 	// Convert suggestedTags into grpc model
@@ -81,7 +61,6 @@ func (s *FancamServer) GetFancamByID(ctx context.Context, id *pb.ID) (*pb.Fancam
 		ChannelTitle:  result.ChannelTitle,
 		RootThumbnail: result.RootThumbnail,
 		RecordDate:    timestamppb.New(result.RecordDate),
-		Artists:       artists,
 		SuggestedTags: suggestedTags,
 	}, nil
 }
@@ -134,25 +113,6 @@ func (s *FancamServer) GetFancams(ctx context.Context, input *pb.GetFancamsReque
 			KrSong:   result.SuggestedTags.KrSong,
 		}
 
-		var artists []*pb.ArtistObject
-		for _, artist := range result.Artists {
-			mappedArtist := &pb.ArtistObject{
-				Id:              artist.ID.Hex(),
-				StageName:       artist.StageName,
-				FullName:        artist.FullName,
-				KoreanName:      artist.KoreanName,
-				KoreanStageName: artist.KoreanStageName,
-				Dob:             timestamppb.New(artist.DOB),
-				Group:           artist.Group,
-				Country:         artist.Country,
-				Height:          int32(artist.Height),
-				Weight:          int32(artist.Weight),
-				Birthplace:      artist.Birthplace,
-				Gender:          pb.Gender(pb.Gender_value[artist.Gender]),
-				Instagram:       artist.Instagram,
-			}
-			artists = append(artists, mappedArtist)
-		}
 		tmp := &pb.FancamObject{
 			Id:            result.ID.Hex(),
 			Title:         result.Title,
@@ -162,7 +122,6 @@ func (s *FancamServer) GetFancams(ctx context.Context, input *pb.GetFancamsReque
 			ChannelTitle:  result.ChannelTitle,
 			RootThumbnail: result.RootThumbnail,
 			RecordDate:    timestamppb.New(result.RecordDate),
-			Artists:       artists,
 			SuggestedTags: suggestedTags,
 		}
 		fancamList.Fancams = append(fancamList.Fancams, tmp)
@@ -171,7 +130,7 @@ func (s *FancamServer) GetFancams(ctx context.Context, input *pb.GetFancamsReque
 	return fancamList, err
 }
 
-func (s *FancamServer) GetLatest(ctx context.Context, input *pb.LatestRequest) (*pb.FancamList, error) {
+func (s *FancamServer) GetFancamsLatest(ctx context.Context, input *pb.GetFancamsLatestRequest) (*pb.FancamList, error) {
 	// Validate max_results input
 	maxResults := input.GetMaxResults()
 	if maxResults > 50 {
@@ -218,26 +177,7 @@ func (s *FancamServer) GetLatest(ctx context.Context, input *pb.LatestRequest) (
 			KrSong:   result.SuggestedTags.KrSong,
 		}
 
-		var artists []*pb.ArtistObject
-		for _, artist := range result.Artists {
-			mappedArtist := &pb.ArtistObject{
-				Id:              artist.ID.Hex(),
-				StageName:       artist.StageName,
-				FullName:        artist.FullName,
-				KoreanName:      artist.KoreanName,
-				KoreanStageName: artist.KoreanStageName,
-				Dob:             timestamppb.New(artist.DOB),
-				Group:           artist.Group,
-				Country:         artist.Country,
-				Height:          int32(artist.Height),
-				Weight:          int32(artist.Weight),
-				Birthplace:      artist.Birthplace,
-				Gender:          pb.Gender(pb.Gender_value[artist.Gender]),
-				Instagram:       artist.Instagram,
-			}
-			artists = append(artists, mappedArtist)
-		}
-		tmp := &pb.FancamObject{
+		mappedFancam := &pb.FancamObject{
 			Id:            result.ID.Hex(),
 			Title:         result.Title,
 			Description:   result.Description,
@@ -246,10 +186,9 @@ func (s *FancamServer) GetLatest(ctx context.Context, input *pb.LatestRequest) (
 			ChannelTitle:  result.ChannelTitle,
 			RootThumbnail: result.RootThumbnail,
 			RecordDate:    timestamppb.New(result.RecordDate),
-			Artists:       artists,
 			SuggestedTags: suggestedTags,
 		}
-		fancamList.Fancams = append(fancamList.Fancams, tmp)
+		fancamList.Fancams = append(fancamList.Fancams, mappedFancam)
 	}
 
 	return fancamList, err
@@ -258,31 +197,10 @@ func (s *FancamServer) GetLatest(ctx context.Context, input *pb.LatestRequest) (
 func (s *FancamServer) CreateFancams(ctx context.Context, input *pb.FancamList) (*emptypb.Empty, error) {
 	// Convert grpc fancamlist into mongodb model
 	inputFancams := input.GetFancams()
-	fancams := make([]interface{}, len(inputFancams))
+	fancams := make([]interface{}, len(inputFancams)-1)
 
 	// Loop over all entries given
 	for _, fancam := range inputFancams {
-		// Map artists
-		var mappedArtists []model.Artist
-		inputArtists := fancam.GetArtists()
-		for _, artist := range inputArtists {
-			mappedArtist := model.Artist{
-				StageName:       artist.GetStageName(),
-				FullName:        artist.GetFullName(),
-				KoreanName:      artist.GetKoreanName(),
-				KoreanStageName: artist.GetKoreanStageName(),
-				DOB:             artist.GetDob().AsTime(),
-				Group:           artist.GetGroup(),
-				Country:         artist.GetCountry(),
-				Height:          int8(artist.GetHeight()),
-				Weight:          int8(artist.GetWeight()),
-				Birthplace:      artist.GetBirthplace(),
-				Gender:          artist.GetGender().String(),
-				Instagram:       artist.GetInstagram(),
-			}
-			mappedArtists = append(mappedArtists, mappedArtist)
-		}
-
 		// Map suggested tags
 		mappedTag := model.SuggestedTags{
 			EnArtist: fancam.SuggestedTags.EnArtist,
@@ -302,7 +220,6 @@ func (s *FancamServer) CreateFancams(ctx context.Context, input *pb.FancamList) 
 			ChannelTitle:  fancam.GetChannelTitle(),
 			RootThumbnail: fancam.GetRootThumbnail(),
 			RecordDate:    fancam.RecordDate.AsTime(),
-			Artists:       mappedArtists,
 			SuggestedTags: mappedTag,
 		}
 		fancams = append(fancams, mappedFancam)
@@ -314,15 +231,18 @@ func (s *FancamServer) CreateFancams(ctx context.Context, input *pb.FancamList) 
 		return nil, err
 	}
 
+	log.Print(fancams)
+
 	_, err = coll.InsertMany(ctx, fancams)
 	if err != nil {
+		log.Fatal(err)
 		return nil, err
 	}
 
 	return &emptypb.Empty{}, nil
 }
 
-func (s *FancamServer) DeleteFancam(ctx context.Context, id *pb.ID) (*emptypb.Empty, error) {
+func (s *FancamServer) DeleteFancam(ctx context.Context, id *pb.DeleteFancamRequest) (*emptypb.Empty, error) {
 	return &emptypb.Empty{}, nil
 }
 

@@ -6,11 +6,11 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 
 service Fancam {
-  rpc GetFancamByID (ID) returns (FancamObject) {}
+  rpc GetFancam (GetFancamRequest) returns (FancamObject) {}
   rpc GetFancams (GetFancamsRequest) returns (FancamList) {}
-  rpc GetLatest (LatestRequest) returns (FancamList) {}
+  rpc GetFancamsLatest (GetFancamsLatestRequest) returns (FancamList) {}
   rpc CreateFancams (FancamList) returns (google.protobuf.Empty) {}
-  rpc DeleteFancam (ID) returns (google.protobuf.Empty) {}
+  rpc DeleteFancam (DeleteFancamRequest) returns (google.protobuf.Empty) {}
 }
 
 enum Gender {
@@ -31,7 +31,6 @@ message FancamObject {
   string channelTitle = 6;
   string rootThumbnail = 7;
   google.protobuf.Timestamp record_date = 8;
-  repeated ArtistObject artists = 9;
   SuggestedTags suggested_tags = 10; 
 }
 
@@ -39,7 +38,7 @@ message GetFancamsRequest {
   repeated string ids = 1;
 }
 
-message LatestRequest { 
+message GetFancamsLatestRequest { 
   // maximum value is 50
   int32 max_results = 1; 
 }
@@ -69,6 +68,10 @@ message SuggestedTags {
   repeated string kr_song = 6;
 }
 
-message ID {
+message GetFancamRequest {
+  string id = 1;
+}
+
+message DeleteFancamRequest {
   string id = 1;
 }
