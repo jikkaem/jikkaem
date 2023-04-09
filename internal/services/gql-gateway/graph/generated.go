@@ -63,7 +63,6 @@ type ComplexityRoot struct {
 	}
 
 	Fancam struct {
-		Artists       func(childComplexity int) int
 		ChannelID     func(childComplexity int) int
 		ChannelTitle  func(childComplexity int) int
 		Description   func(childComplexity int) int
@@ -221,13 +220,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Artist.Weight(childComplexity), true
-
-	case "Fancam.artists":
-		if e.complexity.Fancam.Artists == nil {
-			break
-		}
-
-		return e.complexity.Fancam.Artists(childComplexity), true
 
 	case "Fancam.channelID":
 		if e.complexity.Fancam.ChannelID == nil {
@@ -1632,78 +1624,6 @@ func (ec *executionContext) fieldContext_Fancam_suggestedTags(ctx context.Contex
 	return fc, nil
 }
 
-func (ec *executionContext) _Fancam_artists(ctx context.Context, field graphql.CollectedField, obj *gqlmodel.Fancam) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Fancam_artists(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Artists, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.([]*gqlmodel.Artist)
-	fc.Result = res
-	return ec.marshalNArtist2ᚕᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐArtist(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Fancam_artists(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Fancam",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_Artist_id(ctx, field)
-			case "stageName":
-				return ec.fieldContext_Artist_stageName(ctx, field)
-			case "fullName":
-				return ec.fieldContext_Artist_fullName(ctx, field)
-			case "koreanName":
-				return ec.fieldContext_Artist_koreanName(ctx, field)
-			case "koreanStageName":
-				return ec.fieldContext_Artist_koreanStageName(ctx, field)
-			case "dob":
-				return ec.fieldContext_Artist_dob(ctx, field)
-			case "group":
-				return ec.fieldContext_Artist_group(ctx, field)
-			case "country":
-				return ec.fieldContext_Artist_country(ctx, field)
-			case "height":
-				return ec.fieldContext_Artist_height(ctx, field)
-			case "weight":
-				return ec.fieldContext_Artist_weight(ctx, field)
-			case "birthplace":
-				return ec.fieldContext_Artist_birthplace(ctx, field)
-			case "gender":
-				return ec.fieldContext_Artist_gender(ctx, field)
-			case "instagram":
-				return ec.fieldContext_Artist_instagram(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Artist", field.Name)
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Mutation_createUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Mutation_createUser(ctx, field)
 	if err != nil {
@@ -1884,8 +1804,6 @@ func (ec *executionContext) fieldContext_Query_fancam(ctx context.Context, field
 				return ec.fieldContext_Fancam_recordDate(ctx, field)
 			case "suggestedTags":
 				return ec.fieldContext_Fancam_suggestedTags(ctx, field)
-			case "artists":
-				return ec.fieldContext_Fancam_artists(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Fancam", field.Name)
 		},
@@ -1961,8 +1879,6 @@ func (ec *executionContext) fieldContext_Query_fancams(ctx context.Context, fiel
 				return ec.fieldContext_Fancam_recordDate(ctx, field)
 			case "suggestedTags":
 				return ec.fieldContext_Fancam_suggestedTags(ctx, field)
-			case "artists":
-				return ec.fieldContext_Fancam_artists(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Fancam", field.Name)
 		},
@@ -2038,8 +1954,6 @@ func (ec *executionContext) fieldContext_Query_latestFancams(ctx context.Context
 				return ec.fieldContext_Fancam_recordDate(ctx, field)
 			case "suggestedTags":
 				return ec.fieldContext_Fancam_suggestedTags(ctx, field)
-			case "artists":
-				return ec.fieldContext_Fancam_artists(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Fancam", field.Name)
 		},
@@ -4779,13 +4693,6 @@ func (ec *executionContext) _Fancam(ctx context.Context, sel ast.SelectionSet, o
 		case "suggestedTags":
 
 			out.Values[i] = ec._Fancam_suggestedTags(ctx, field, obj)
-
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "artists":
-
-			out.Values[i] = ec._Fancam_artists(ctx, field, obj)
 
 			if out.Values[i] == graphql.Null {
 				invalids++
