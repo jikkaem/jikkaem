@@ -15,5 +15,5 @@ message UserObject {
 }
 
 message ID {
-    string id = 1;
+  string id = 1;
 }
