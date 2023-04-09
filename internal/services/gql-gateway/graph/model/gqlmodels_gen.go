@@ -35,7 +35,6 @@ type Fancam struct {
 	RootThumbnail string         `json:"rootThumbnail"`
 	RecordDate    *time.Time     `json:"recordDate,omitempty"`
 	SuggestedTags *SuggestedTags `json:"suggestedTags"`
-	Artists       []*Artist      `json:"artists"`
 }
 
 type LatestFancamsInput struct {

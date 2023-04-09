@@ -37,7 +37,6 @@ type Fancam struct {
 	ChannelTitle  string             `bson:"channelTitle"`
 	RootThumbnail string             `bson:"rootThumbnail"`
 	RecordDate    time.Time          `bson:"recordDate,omitempty"`
-	Artists       []Artist           `bson:"artists"`
 	SuggestedTags SuggestedTags      `bson:"suggestedTags,omitempty"`
 }
 

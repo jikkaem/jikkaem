@@ -36,7 +36,6 @@ type Fancam {
   rootThumbnail: String!
   recordDate: Time
   suggestedTags: SuggestedTags!
-  artists: [Artist]!
 }
 
 type SuggestedTags {
