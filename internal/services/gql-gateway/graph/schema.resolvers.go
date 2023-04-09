@@ -89,11 +89,11 @@ func (r *queryResolver) Fancam(ctx context.Context, input gqlmodel.SingleID) (*g
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	in := &pbfc.ID{
+	in := &pbfc.GetFancamRequest{
 		Id: input.ID,
 	}
 
-	res, err := c.GetFancamByID(ctx, in)
+	res, err := c.GetFancam(ctx, in)
 	if err != nil {
 		return nil, err
 	}
@@ -113,38 +113,6 @@ func (r *queryResolver) Fancam(ctx context.Context, input gqlmodel.SingleID) (*g
 		KrSong:   res.SuggestedTags.GetKrSong(),
 	}
 
-	// Format Artists
-	var artists []*gqlmodel.Artist
-	for _, artist := range res.GetArtists() {
-		// Get ptr to dob
-		dob := artist.GetDob().AsTime()
-		ptrDob := &dob
-		// Get ptr to height, weight and ig
-		intHeight := int(artist.GetHeight())
-		ptrHeight := &intHeight
-		intWeight := float64(artist.GetWeight())
-		ptrWeight := &intWeight
-		ig := artist.GetInstagram()
-		ptrIg := &ig
-		obj := &gqlmodel.Artist{
-			ID:              artist.GetId(),
-			StageName:       artist.GetStageName(),
-			FullName:        artist.GetFullName(),
-			KoreanName:      artist.GetKoreanName(),
-			KoreanStageName: artist.GetKoreanName(),
-			Dob:             ptrDob,
-			Group:           &artist.Group,
-			Country:         artist.GetCountry(),
-			Height:          ptrHeight,
-			Weight:          ptrWeight,
-			Birthplace:      artist.GetBirthplace(),
-			Gender:          gqlmodel.Gender(artist.GetGender().String()),
-			Instagram:       ptrIg,
-		}
-
-		artists = append(artists, obj)
-	}
-
 	gqlFancam := &gqlmodel.Fancam{
 		ID:            res.GetId(),
 		Title:         res.GetTitle(),
@@ -155,7 +123,6 @@ func (r *queryResolver) Fancam(ctx context.Context, input gqlmodel.SingleID) (*g
 		RootThumbnail: res.GetRootThumbnail(),
 		RecordDate:    ptrRecordDate,
 		SuggestedTags: suggestedTags,
-		Artists:       artists,
 	}
 
 	return gqlFancam, nil
