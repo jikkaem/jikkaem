@@ -53,7 +53,7 @@ func (s *FancamServer) GetFancam(ctx context.Context, input *pb.GetFancamRequest
 	}
 
 	return &pb.FancamObject{
-		Id:            result.ID.Hex(),
+		Id:            result.ID,
 		Title:         result.Title,
 		Description:   result.Description,
 		PublishedAt:   timestamppb.New(result.PublishedAt),
@@ -114,7 +114,7 @@ func (s *FancamServer) GetFancams(ctx context.Context, input *pb.GetFancamsReque
 		}
 
 		tmp := &pb.FancamObject{
-			Id:            result.ID.Hex(),
+			Id:            result.ID,
 			Title:         result.Title,
 			Description:   result.Description,
 			PublishedAt:   timestamppb.New(result.PublishedAt),
@@ -178,7 +178,7 @@ func (s *FancamServer) GetFancamsLatest(ctx context.Context, input *pb.GetFancam
 		}
 
 		mappedFancam := &pb.FancamObject{
-			Id:            result.ID.Hex(),
+			Id:            result.ID,
 			Title:         result.Title,
 			Description:   result.Description,
 			PublishedAt:   timestamppb.New(result.PublishedAt),
@@ -197,7 +197,8 @@ func (s *FancamServer) GetFancamsLatest(ctx context.Context, input *pb.GetFancam
 func (s *FancamServer) CreateFancams(ctx context.Context, input *pb.FancamList) (*emptypb.Empty, error) {
 	// Convert grpc fancamlist into mongodb model
 	inputFancams := input.GetFancams()
-	fancams := make([]interface{}, len(inputFancams)-1)
+	log.Print(inputFancams)
+	fancams := []interface{}{}
 
 	// Loop over all entries given
 	for _, fancam := range inputFancams {
@@ -212,7 +213,7 @@ func (s *FancamServer) CreateFancams(ctx context.Context, input *pb.FancamList) 
 		}
 
 		mappedFancam := model.Fancam{
-			ID:            primitive.NewObjectID(),
+			ID:            fancam.Id,
 			Title:         fancam.GetTitle(),
 			Description:   fancam.GetDescription(),
 			PublishedAt:   fancam.PublishedAt.AsTime(),

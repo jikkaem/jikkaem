@@ -29,15 +29,15 @@ type Artist struct {
 }
 
 type Fancam struct {
-	ID            primitive.ObjectID `bson:"_id"`
-	Title         string             `bson:"title"`
-	Description   string             `bson:"description"`
-	PublishedAt   time.Time          `bson:"publishedAt"`
-	ChannelID     string             `bson:"channelId"`
-	ChannelTitle  string             `bson:"channelTitle"`
-	RootThumbnail string             `bson:"rootThumbnail"`
-	RecordDate    time.Time          `bson:"recordDate,omitempty"`
-	SuggestedTags SuggestedTags      `bson:"suggestedTags,omitempty"`
+	ID            string        `bson:"_id"`
+	Title         string        `bson:"title"`
+	Description   string        `bson:"description"`
+	PublishedAt   time.Time     `bson:"publishedAt"`
+	ChannelID     string        `bson:"channelId"`
+	ChannelTitle  string        `bson:"channelTitle"`
+	RootThumbnail string        `bson:"rootThumbnail"`
+	RecordDate    time.Time     `bson:"recordDate,omitempty"`
+	SuggestedTags SuggestedTags `bson:"suggestedTags,omitempty"`
 }
 
 type SuggestedTags struct {
