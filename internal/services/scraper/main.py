@@ -106,7 +106,7 @@ def insertFancams(fancamList: dict, suggested_tags) -> None:
 
 def main():
     # Read file with all artists and groups
-    with open("groupsAndArtists.txt") as f:
+    with open("data/groupsAndArtists.txt") as f:
         line = f.readline()
 
         artists = line.split(",")
