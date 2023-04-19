@@ -197,12 +197,9 @@ func (s *FancamServer) GetFancamsLatest(ctx context.Context, input *pb.GetFancam
 func (s *FancamServer) CreateFancams(ctx context.Context, input *pb.FancamList) (*emptypb.Empty, error) {
 	// Convert grpc fancamlist into mongodb model
 	inputFancams := input.GetFancams()
-	log.Print(inputFancams)
-	fancams := []interface{}{}
+	fancams := []model.Fancam{}
 
-	// Loop over all entries given
 	for _, fancam := range inputFancams {
-		// Map suggested tags
 		mappedTag := model.SuggestedTags{
 			EnArtist: fancam.SuggestedTags.EnArtist,
 			EnGroup:  fancam.SuggestedTags.EnGroup,
@@ -232,14 +229,16 @@ func (s *FancamServer) CreateFancams(ctx context.Context, input *pb.FancamList) 
 		return nil, err
 	}
 
-	log.Print(fancams)
-
-	_, err = coll.InsertMany(ctx, fancams)
-	if err != nil {
-		log.Fatal(err)
-		return nil, err
+	for _, fancam := range fancams {
+		filter := bson.D{{Key: "_id", Value: fancam.ID}}
+		update := bson.D{{Key: "$set", Value: fancam}}
+		opts := options.Update().SetUpsert(true)
+		_, err = coll.UpdateOne(ctx, filter, update, opts)
+		if err != nil {
+			log.Fatal(err)
+			return nil, err
+		}
 	}
-
 	return &emptypb.Empty{}, nil
 }
 
