@@ -16,6 +16,12 @@ protocSearch:
     --go-grpc_out=. --go-grpc_opt=paths=source_relative \
     internal/proto/search/search.proto
 
+scrape:
+	python3 internal/services/scraper/main.py
+
+pyProtocFancam:
+	python3 -m grpc_tools.protoc -Iinternal/proto/fancam --python_out=internal/services/scraper --pyi_out=internal/services/scraper --grpc_python_out=internal/services/scraper fancam.proto 
+
 devUser:
 	air --build.cmd "go build -o bin/user cmd/user/main.go" --build.bin "./bin/user"
 

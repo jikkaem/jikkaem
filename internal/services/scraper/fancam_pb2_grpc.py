@@ -2,8 +2,8 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
+import fancam_pb2 as fancam__pb2
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
-from internal.proto.fancam import fancam_pb2 as internal_dot_proto_dot_fancam_dot_fancam__pb2
 
 
 class FancamStub(object):
@@ -17,27 +17,27 @@ class FancamStub(object):
         """
         self.GetFancam = channel.unary_unary(
                 '/Fancam/GetFancam',
-                request_serializer=internal_dot_proto_dot_fancam_dot_fancam__pb2.GetFancamRequest.SerializeToString,
-                response_deserializer=internal_dot_proto_dot_fancam_dot_fancam__pb2.FancamObject.FromString,
+                request_serializer=fancam__pb2.GetFancamRequest.SerializeToString,
+                response_deserializer=fancam__pb2.FancamObject.FromString,
                 )
         self.GetFancams = channel.unary_unary(
                 '/Fancam/GetFancams',
-                request_serializer=internal_dot_proto_dot_fancam_dot_fancam__pb2.GetFancamsRequest.SerializeToString,
-                response_deserializer=internal_dot_proto_dot_fancam_dot_fancam__pb2.FancamList.FromString,
+                request_serializer=fancam__pb2.GetFancamsRequest.SerializeToString,
+                response_deserializer=fancam__pb2.FancamList.FromString,
                 )
         self.GetFancamsLatest = channel.unary_unary(
                 '/Fancam/GetFancamsLatest',
-                request_serializer=internal_dot_proto_dot_fancam_dot_fancam__pb2.GetFancamsLatestRequest.SerializeToString,
-                response_deserializer=internal_dot_proto_dot_fancam_dot_fancam__pb2.FancamList.FromString,
+                request_serializer=fancam__pb2.GetFancamsLatestRequest.SerializeToString,
+                response_deserializer=fancam__pb2.FancamList.FromString,
                 )
         self.CreateFancams = channel.unary_unary(
                 '/Fancam/CreateFancams',
-                request_serializer=internal_dot_proto_dot_fancam_dot_fancam__pb2.FancamList.SerializeToString,
+                request_serializer=fancam__pb2.FancamList.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
         self.DeleteFancam = channel.unary_unary(
                 '/Fancam/DeleteFancam',
-                request_serializer=internal_dot_proto_dot_fancam_dot_fancam__pb2.DeleteFancamRequest.SerializeToString,
+                request_serializer=fancam__pb2.DeleteFancamRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
 
@@ -80,27 +80,27 @@ def add_FancamServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'GetFancam': grpc.unary_unary_rpc_method_handler(
                     servicer.GetFancam,
-                    request_deserializer=internal_dot_proto_dot_fancam_dot_fancam__pb2.GetFancamRequest.FromString,
-                    response_serializer=internal_dot_proto_dot_fancam_dot_fancam__pb2.FancamObject.SerializeToString,
+                    request_deserializer=fancam__pb2.GetFancamRequest.FromString,
+                    response_serializer=fancam__pb2.FancamObject.SerializeToString,
             ),
             'GetFancams': grpc.unary_unary_rpc_method_handler(
                     servicer.GetFancams,
-                    request_deserializer=internal_dot_proto_dot_fancam_dot_fancam__pb2.GetFancamsRequest.FromString,
-                    response_serializer=internal_dot_proto_dot_fancam_dot_fancam__pb2.FancamList.SerializeToString,
+                    request_deserializer=fancam__pb2.GetFancamsRequest.FromString,
+                    response_serializer=fancam__pb2.FancamList.SerializeToString,
             ),
             'GetFancamsLatest': grpc.unary_unary_rpc_method_handler(
                     servicer.GetFancamsLatest,
-                    request_deserializer=internal_dot_proto_dot_fancam_dot_fancam__pb2.GetFancamsLatestRequest.FromString,
-                    response_serializer=internal_dot_proto_dot_fancam_dot_fancam__pb2.FancamList.SerializeToString,
+                    request_deserializer=fancam__pb2.GetFancamsLatestRequest.FromString,
+                    response_serializer=fancam__pb2.FancamList.SerializeToString,
             ),
             'CreateFancams': grpc.unary_unary_rpc_method_handler(
                     servicer.CreateFancams,
-                    request_deserializer=internal_dot_proto_dot_fancam_dot_fancam__pb2.FancamList.FromString,
+                    request_deserializer=fancam__pb2.FancamList.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
             'DeleteFancam': grpc.unary_unary_rpc_method_handler(
                     servicer.DeleteFancam,
-                    request_deserializer=internal_dot_proto_dot_fancam_dot_fancam__pb2.DeleteFancamRequest.FromString,
+                    request_deserializer=fancam__pb2.DeleteFancamRequest.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
     }
@@ -125,8 +125,8 @@ class Fancam(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/Fancam/GetFancam',
-            internal_dot_proto_dot_fancam_dot_fancam__pb2.GetFancamRequest.SerializeToString,
-            internal_dot_proto_dot_fancam_dot_fancam__pb2.FancamObject.FromString,
+            fancam__pb2.GetFancamRequest.SerializeToString,
+            fancam__pb2.FancamObject.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -142,8 +142,8 @@ class Fancam(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/Fancam/GetFancams',
-            internal_dot_proto_dot_fancam_dot_fancam__pb2.GetFancamsRequest.SerializeToString,
-            internal_dot_proto_dot_fancam_dot_fancam__pb2.FancamList.FromString,
+            fancam__pb2.GetFancamsRequest.SerializeToString,
+            fancam__pb2.FancamList.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -159,8 +159,8 @@ class Fancam(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/Fancam/GetFancamsLatest',
-            internal_dot_proto_dot_fancam_dot_fancam__pb2.GetFancamsLatestRequest.SerializeToString,
-            internal_dot_proto_dot_fancam_dot_fancam__pb2.FancamList.FromString,
+            fancam__pb2.GetFancamsLatestRequest.SerializeToString,
+            fancam__pb2.FancamList.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -176,7 +176,7 @@ class Fancam(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/Fancam/CreateFancams',
-            internal_dot_proto_dot_fancam_dot_fancam__pb2.FancamList.SerializeToString,
+            fancam__pb2.FancamList.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
@@ -193,7 +193,7 @@ class Fancam(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/Fancam/DeleteFancam',
-            internal_dot_proto_dot_fancam_dot_fancam__pb2.DeleteFancamRequest.SerializeToString,
+            fancam__pb2.DeleteFancamRequest.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
