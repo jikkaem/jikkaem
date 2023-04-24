@@ -26,43 +26,55 @@ type FancamServer struct {
 	pb.UnimplementedFancamServer
 }
 
-func (s *FancamServer) GetFancam(ctx context.Context, input *pb.GetFancamRequest) (*pb.FancamObject, error) {
+func (s *FancamServer) getFancamById(id string) (*model.Fancam, error) {
 	coll, err := s.getColl("fancams")
 	if err != nil {
 		return nil, err
 	}
 
 	var result model.Fancam
-	hex, err := primitive.ObjectIDFromHex(input.Id)
-	if err != nil {
-		return nil, err
-	}
-	filter := bson.D{{Key: "_id", Value: hex}}
+	filter := bson.D{{Key: "_id", Value: id}}
 	if err = coll.FindOne(context.TODO(), filter).Decode(&result); err != nil {
 		return nil, err
 	}
 
-	// Convert suggestedTags into grpc model
+	return &result, nil
+}
+
+func (s *FancamServer) convertFancamDbToPb(fancam *model.Fancam) *pb.FancamObject {
 	suggestedTags := &pb.SuggestedTags{
-		EnArtist: result.SuggestedTags.EnArtist,
-		EnGroup:  result.SuggestedTags.EnGroup,
-		EnSong:   result.SuggestedTags.EnSong,
-		KrArtist: result.SuggestedTags.KrArtist,
-		KrGroup:  result.SuggestedTags.KrGroup,
-		KrSong:   result.SuggestedTags.KrSong,
+		EnArtist: fancam.SuggestedTags.EnArtist,
+		EnGroup:  fancam.SuggestedTags.EnGroup,
+		EnSong:   fancam.SuggestedTags.EnSong,
+		KrArtist: fancam.SuggestedTags.KrArtist,
+		KrGroup:  fancam.SuggestedTags.KrGroup,
+		KrSong:   fancam.SuggestedTags.KrSong,
 	}
 
-	return &pb.FancamObject{
-		Id:            result.ID,
-		Title:         result.Title,
-		Description:   result.Description,
-		PublishedAt:   timestamppb.New(result.PublishedAt),
-		ChannelId:     result.ChannelID,
-		ChannelTitle:  result.ChannelTitle,
-		RootThumbnail: result.RootThumbnail,
-		RecordDate:    timestamppb.New(result.RecordDate),
+	pbObj := &pb.FancamObject{
+		Id:            fancam.ID,
+		Title:         fancam.Title,
+		Description:   fancam.Description,
+		PublishedAt:   timestamppb.New(fancam.PublishedAt),
+		ChannelId:     fancam.ChannelID,
+		ChannelTitle:  fancam.ChannelTitle,
+		RootThumbnail: fancam.RootThumbnail,
+		RecordDate:    timestamppb.New(fancam.RecordDate),
 		SuggestedTags: suggestedTags,
-	}, nil
+	}
+
+	return pbObj
+}
+
+func (s *FancamServer) GetFancam(ctx context.Context, input *pb.GetFancamRequest) (*pb.FancamObject, error) {
+	result, err := s.getFancamById(input.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	pbObj := s.convertFancamDbToPb(result)
+
+	return pbObj, nil
 }
 
 func (s *FancamServer) GetFancams(ctx context.Context, input *pb.GetFancamsRequest) (*pb.FancamList, error) {
