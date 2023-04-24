@@ -3,12 +3,6 @@ stages:
   - compile
   - dockerize
 
-build-job:
-  image: alpine:3.17
-  stage: build
-  script:
-    - echo "Hello, $GITLAB_USER_LOGIN!"
-
 test-job1:
   image: alpine:3.17
   stage: test
