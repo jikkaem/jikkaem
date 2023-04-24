@@ -3,9 +3,9 @@ package user
 import (
 	"context"
 
-	"jikkaem/internal/model"
-	"jikkaem/internal/mongodb"
-	pb "jikkaem/internal/proto/user"
+	"jikkaem/model"
+	"jikkaem/mongodb"
+	pb "jikkaem/proto/user"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"

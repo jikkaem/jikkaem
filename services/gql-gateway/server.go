@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"os"
 
-	"jikkaem/internal/services/gql-gateway/graph"
+	"jikkaem/services/gql-gateway/graph"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"

@@ -8,7 +8,7 @@ import (
 	"embed"
 	"errors"
 	"fmt"
-	gqlmodel "jikkaem/internal/services/gql-gateway/graph/model"
+	gqlmodel "jikkaem/services/gql-gateway/graph/model"
 	"strconv"
 	"sync"
 	"sync/atomic"
@@ -523,7 +523,7 @@ func (ec *executionContext) field_Mutation_createUser_args(ctx context.Context, 
 	var arg0 gqlmodel.NewUser
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNNewUser2jikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐNewUser(ctx, tmp)
+		arg0, err = ec.unmarshalNNewUser2jikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐNewUser(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -538,7 +538,7 @@ func (ec *executionContext) field_Mutation_deleteUser_args(ctx context.Context, 
 	var arg0 gqlmodel.SingleID
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNSingleID2jikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐSingleID(ctx, tmp)
+		arg0, err = ec.unmarshalNSingleID2jikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐSingleID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -568,7 +568,7 @@ func (ec *executionContext) field_Query_fancam_args(ctx context.Context, rawArgs
 	var arg0 gqlmodel.SingleID
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNSingleID2jikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐSingleID(ctx, tmp)
+		arg0, err = ec.unmarshalNSingleID2jikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐSingleID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -583,7 +583,7 @@ func (ec *executionContext) field_Query_fancams_args(ctx context.Context, rawArg
 	var arg0 gqlmodel.ListIDs
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNListIDs2jikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐListIDs(ctx, tmp)
+		arg0, err = ec.unmarshalNListIDs2jikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐListIDs(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -598,7 +598,7 @@ func (ec *executionContext) field_Query_latestFancams_args(ctx context.Context, 
 	var arg0 gqlmodel.LatestFancamsInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNLatestFancamsInput2jikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐLatestFancamsInput(ctx, tmp)
+		arg0, err = ec.unmarshalNLatestFancamsInput2jikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐLatestFancamsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -613,7 +613,7 @@ func (ec *executionContext) field_Query_user_args(ctx context.Context, rawArgs m
 	var arg0 gqlmodel.SingleID
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNSingleID2jikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐSingleID(ctx, tmp)
+		arg0, err = ec.unmarshalNSingleID2jikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐSingleID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1160,7 +1160,7 @@ func (ec *executionContext) _Artist_gender(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.(gqlmodel.Gender)
 	fc.Result = res
-	return ec.marshalNGender2jikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐGender(ctx, field.Selections, res)
+	return ec.marshalNGender2jikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐGender(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Artist_gender(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1594,7 +1594,7 @@ func (ec *executionContext) _Fancam_suggestedTags(ctx context.Context, field gra
 	}
 	res := resTmp.(*gqlmodel.SuggestedTags)
 	fc.Result = res
-	return ec.marshalNSuggestedTags2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐSuggestedTags(ctx, field.Selections, res)
+	return ec.marshalNSuggestedTags2ᚖjikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐSuggestedTags(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Fancam_suggestedTags(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1652,7 +1652,7 @@ func (ec *executionContext) _Mutation_createUser(ctx context.Context, field grap
 	}
 	res := resTmp.(*gqlmodel.User)
 	fc.Result = res
-	return ec.marshalNUser2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚖjikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1715,7 +1715,7 @@ func (ec *executionContext) _Mutation_deleteUser(ctx context.Context, field grap
 	}
 	res := resTmp.(*gqlmodel.User)
 	fc.Result = res
-	return ec.marshalNUser2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚖjikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_deleteUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1775,7 +1775,7 @@ func (ec *executionContext) _Query_fancam(ctx context.Context, field graphql.Col
 	}
 	res := resTmp.(*gqlmodel.Fancam)
 	fc.Result = res
-	return ec.marshalOFancam2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐFancam(ctx, field.Selections, res)
+	return ec.marshalOFancam2ᚖjikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐFancam(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_fancam(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1850,7 +1850,7 @@ func (ec *executionContext) _Query_fancams(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.([]*gqlmodel.Fancam)
 	fc.Result = res
-	return ec.marshalNFancam2ᚕᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐFancam(ctx, field.Selections, res)
+	return ec.marshalNFancam2ᚕᚖjikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐFancam(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_fancams(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1925,7 +1925,7 @@ func (ec *executionContext) _Query_latestFancams(ctx context.Context, field grap
 	}
 	res := resTmp.([]*gqlmodel.Fancam)
 	fc.Result = res
-	return ec.marshalNFancam2ᚕᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐFancamᚄ(ctx, field.Selections, res)
+	return ec.marshalNFancam2ᚕᚖjikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐFancamᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_latestFancams(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2000,7 +2000,7 @@ func (ec *executionContext) _Query_artist(ctx context.Context, field graphql.Col
 	}
 	res := resTmp.([]*gqlmodel.Artist)
 	fc.Result = res
-	return ec.marshalNArtist2ᚕᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐArtist(ctx, field.Selections, res)
+	return ec.marshalNArtist2ᚕᚖjikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐArtist(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_artist(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2069,7 +2069,7 @@ func (ec *executionContext) _Query_user(ctx context.Context, field graphql.Colle
 	}
 	res := resTmp.(*gqlmodel.User)
 	fc.Result = res
-	return ec.marshalOUser2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalOUser2ᚖjikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_user(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -5330,7 +5330,7 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNArtist2ᚕᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐArtist(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.Artist) graphql.Marshaler {
+func (ec *executionContext) marshalNArtist2ᚕᚖjikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐArtist(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.Artist) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -5354,7 +5354,7 @@ func (ec *executionContext) marshalNArtist2ᚕᚖjikkaemᚋinternalᚋservices�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOArtist2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐArtist(ctx, sel, v[i])
+			ret[i] = ec.marshalOArtist2ᚖjikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐArtist(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -5383,7 +5383,7 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) marshalNFancam2ᚕᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐFancam(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.Fancam) graphql.Marshaler {
+func (ec *executionContext) marshalNFancam2ᚕᚖjikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐFancam(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.Fancam) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -5407,7 +5407,7 @@ func (ec *executionContext) marshalNFancam2ᚕᚖjikkaemᚋinternalᚋservices�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOFancam2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐFancam(ctx, sel, v[i])
+			ret[i] = ec.marshalOFancam2ᚖjikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐFancam(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -5421,7 +5421,7 @@ func (ec *executionContext) marshalNFancam2ᚕᚖjikkaemᚋinternalᚋservices�
 	return ret
 }
 
-func (ec *executionContext) marshalNFancam2ᚕᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐFancamᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.Fancam) graphql.Marshaler {
+func (ec *executionContext) marshalNFancam2ᚕᚖjikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐFancamᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.Fancam) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -5445,7 +5445,7 @@ func (ec *executionContext) marshalNFancam2ᚕᚖjikkaemᚋinternalᚋservices�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNFancam2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐFancam(ctx, sel, v[i])
+			ret[i] = ec.marshalNFancam2ᚖjikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐFancam(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -5465,7 +5465,7 @@ func (ec *executionContext) marshalNFancam2ᚕᚖjikkaemᚋinternalᚋservices�
 	return ret
 }
 
-func (ec *executionContext) marshalNFancam2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐFancam(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.Fancam) graphql.Marshaler {
+func (ec *executionContext) marshalNFancam2ᚖjikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐFancam(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.Fancam) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -5475,13 +5475,13 @@ func (ec *executionContext) marshalNFancam2ᚖjikkaemᚋinternalᚋservicesᚋgq
 	return ec._Fancam(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNGender2jikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐGender(ctx context.Context, v interface{}) (gqlmodel.Gender, error) {
+func (ec *executionContext) unmarshalNGender2jikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐGender(ctx context.Context, v interface{}) (gqlmodel.Gender, error) {
 	var res gqlmodel.Gender
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNGender2jikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐGender(ctx context.Context, sel ast.SelectionSet, v gqlmodel.Gender) graphql.Marshaler {
+func (ec *executionContext) marshalNGender2jikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐGender(ctx context.Context, sel ast.SelectionSet, v gqlmodel.Gender) graphql.Marshaler {
 	return v
 }
 
@@ -5547,22 +5547,22 @@ func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.Selecti
 	return res
 }
 
-func (ec *executionContext) unmarshalNLatestFancamsInput2jikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐLatestFancamsInput(ctx context.Context, v interface{}) (gqlmodel.LatestFancamsInput, error) {
+func (ec *executionContext) unmarshalNLatestFancamsInput2jikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐLatestFancamsInput(ctx context.Context, v interface{}) (gqlmodel.LatestFancamsInput, error) {
 	res, err := ec.unmarshalInputLatestFancamsInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNListIDs2jikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐListIDs(ctx context.Context, v interface{}) (gqlmodel.ListIDs, error) {
+func (ec *executionContext) unmarshalNListIDs2jikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐListIDs(ctx context.Context, v interface{}) (gqlmodel.ListIDs, error) {
 	res, err := ec.unmarshalInputListIDs(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNNewUser2jikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐNewUser(ctx context.Context, v interface{}) (gqlmodel.NewUser, error) {
+func (ec *executionContext) unmarshalNNewUser2jikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐNewUser(ctx context.Context, v interface{}) (gqlmodel.NewUser, error) {
 	res, err := ec.unmarshalInputNewUser(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNSingleID2jikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐSingleID(ctx context.Context, v interface{}) (gqlmodel.SingleID, error) {
+func (ec *executionContext) unmarshalNSingleID2jikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐSingleID(ctx context.Context, v interface{}) (gqlmodel.SingleID, error) {
 	res, err := ec.unmarshalInputSingleID(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -5614,7 +5614,7 @@ func (ec *executionContext) marshalNString2ᚕstringᚄ(ctx context.Context, sel
 	return ret
 }
 
-func (ec *executionContext) marshalNSuggestedTags2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐSuggestedTags(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.SuggestedTags) graphql.Marshaler {
+func (ec *executionContext) marshalNSuggestedTags2ᚖjikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐSuggestedTags(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.SuggestedTags) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -5639,11 +5639,11 @@ func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel as
 	return res
 }
 
-func (ec *executionContext) marshalNUser2jikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v gqlmodel.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2jikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v gqlmodel.User) graphql.Marshaler {
 	return ec._User(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNUser2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2ᚖjikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.User) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -5906,7 +5906,7 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 	return res
 }
 
-func (ec *executionContext) marshalOArtist2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐArtist(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.Artist) graphql.Marshaler {
+func (ec *executionContext) marshalOArtist2ᚖjikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐArtist(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.Artist) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -5939,7 +5939,7 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return res
 }
 
-func (ec *executionContext) marshalOFancam2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐFancam(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.Fancam) graphql.Marshaler {
+func (ec *executionContext) marshalOFancam2ᚖjikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐFancam(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.Fancam) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -6010,7 +6010,7 @@ func (ec *executionContext) marshalOTime2ᚖtimeᚐTime(ctx context.Context, sel
 	return res
 }
 
-func (ec *executionContext) marshalOUser2ᚖjikkaemᚋinternalᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.User) graphql.Marshaler {
+func (ec *executionContext) marshalOUser2ᚖjikkaemᚋservicesᚋgqlᚑgatewayᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.User) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

@@ -7,9 +7,9 @@ package graph
 import (
 	"context"
 	"fmt"
-	pbfc "jikkaem/internal/proto/fancam"
-	pbuser "jikkaem/internal/proto/user"
-	gqlmodel "jikkaem/internal/services/gql-gateway/graph/model"
+	pbfc "jikkaem/proto/fancam"
+	pbuser "jikkaem/proto/user"
+	gqlmodel "jikkaem/services/gql-gateway/graph/model"
 	"log"
 	"time"
 

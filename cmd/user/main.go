@@ -5,8 +5,8 @@ import (
 	"log"
 	"net"
 
-	pb "jikkaem/internal/proto/user"
-	"jikkaem/internal/services/user"
+	pb "jikkaem/proto/user"
+	"jikkaem/services/user"
 
 	"google.golang.org/grpc"
 )

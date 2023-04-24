@@ -2,9 +2,9 @@ package fancam
 
 import (
 	"context"
-	"jikkaem/internal/model"
-	"jikkaem/internal/mongodb"
-	pb "jikkaem/internal/proto/fancam"
+	"jikkaem/model"
+	"jikkaem/mongodb"
+	pb "jikkaem/proto/fancam"
 	"log"
 
 	"go.mongodb.org/mongo-driver/bson"

@@ -5,8 +5,8 @@ import (
 	"log"
 	"net"
 
-	pb "jikkaem/internal/proto/fancam"
-	"jikkaem/internal/services/fancam"
+	pb "jikkaem/proto/fancam"
+	"jikkaem/services/fancam"
 
 	"google.golang.org/grpc"
 )
