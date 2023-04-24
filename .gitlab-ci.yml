@@ -1,14 +1,22 @@
+stages:
+  - test
+  - compile
+  - dockerize
+
 build-job:
+  image: alpine:3.17
   stage: build
   script:
     - echo "Hello, $GITLAB_USER_LOGIN!"
 
 test-job1:
+  image: alpine:3.17
   stage: test
   script:
     - echo "This job tests something"
 
 test-job2:
+  image: alpine:3.17
   stage: test
   script:
     - echo "This job tests something, but takes more time than test-job1."
@@ -17,7 +25,7 @@ test-job2:
     - sleep 20
 
 deploy-prod:
-  stage: deploy
+  image: alpine:3.17
+  stage: compile
   script:
-    - echo "This job deploys something from the $CI_COMMIT_BRANCH branch."
-  environment: production
+    - echo "This job compiles something from the $CI_COMMIT_BRANCH branch"
